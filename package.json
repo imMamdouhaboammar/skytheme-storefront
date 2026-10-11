@@ -55,5 +55,6 @@
   ],
   "devDependencies": {
     "@playwright/test": "^1.56.0"
-  }
+  },
+  "type": "module"
 }
