@@ -1,26 +1,43 @@
 name: CI
-
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
-
+    branches: [main]
+permissions:
+  contents: read
 jobs:
-  validate:
+  runtime-and-browser:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-
-      - name: Run Behavioral Evaluation Suite
+      - name: Install dependencies
+        run: bun install
+      - name: Deterministic generator tests
         run: bun scripts/run-evals.ts
-
-      - name: Run Storefront Generator & Invariant Validator
+      - name: Generate and validate HTML preview
         run: |
           bun scripts/generate-storefront.ts --name "CI Brand" --out ./ci-dist
           bun scripts/validate-storefront.ts ./ci-dist/index.html
+      - name: Check safe installer
+        run: |
+          bash -n install.sh
+          mkdir -p "$RUNNER_TEMP/skyhome"
+          HOME="$RUNNER_TEMP/skyhome" bash install.sh
+          test -f "$RUNNER_TEMP/skyhome/.agents/skills/skytheme-storefront/SKILL.md"
+          HOME="$RUNNER_TEMP/skyhome" bash install.sh | grep 'SKIP existing installation'
+      - name: Generate Shopify OS2 starter
+        run: |
+          bun scripts/generate-shopify-theme.ts --out ./ci-shopify
+          test -f ci-shopify/layout/theme.liquid
+          test -f ci-shopify/templates/index.json
+          test -f ci-shopify/sections/immersive-hero.liquid
+          test -f ci-shopify/config/settings_schema.json
+      - name: Install Chromium
+        run: bunx playwright install --with-deps chromium
+      - name: Browser interaction tests
+        run: bun run test:browser
