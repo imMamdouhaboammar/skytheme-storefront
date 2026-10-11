@@ -13,6 +13,8 @@ import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 
 export function generateStorefrontHtml(storeName: string = "AURA LUXE", schemeClass: string = "scheme-1"): string {
+  storeName = storeName.replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[ch] || ch));
+  if (!/^scheme-[1-5]$/.test(schemeClass)) throw new Error("Invalid scheme");
   return `<!DOCTYPE html>
 <html lang="en" class="js ${schemeClass}" style="--scrollbarWidth: 10px;">
 <head>
@@ -28,7 +30,7 @@ export function generateStorefrontHtml(storeName: string = "AURA LUXE", schemeCl
   <link rel="stylesheet" href="css/theme-tokens.css" />
   <link rel="stylesheet" href="css/theme-components.css" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.3/dist/lenis.min.js"></script>
 
   <script type="module" src="js/store-app.js"></script>
 </head>
@@ -123,6 +125,8 @@ export function generateStorefrontHtml(storeName: string = "AURA LUXE", schemeCl
     </div>
   </section>
 
+  <p id="hotspotStatus" role="status" aria-live="polite" class="sr-only"></p>
+
   <!-- Slide-out Cart Drawer -->
   <bag-drawer id="cartDrawer" role="dialog" aria-modal="true" aria-label="Shopping Cart" class="fixed inset-0 z-50 pointer-events-none hidden [&.is-open]:block [&.is-open]:pointer-events-auto">
     <div id="cartOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"></div>
@@ -153,7 +157,7 @@ export function generateStorefrontHtml(storeName: string = "AURA LUXE", schemeCl
   <!-- Mobile Bottom Docker (Touch-Device Optimized) -->
   <mobile-docker class="lg:hidden fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur-md border-t border-gray-200 z-40 px-6 py-3 flex items-center justify-around shadow-lg">
     <a href="#" class="flex flex-col items-center gap-1 text-xs font-semibold text-gray-700">Home</a>
-    <button class="flex flex-col items-center gap-1 text-xs font-semibold text-gray-700" onclick="document.getElementById('cartDrawer').classList.add('is-open')">Cart</button>
+    <button class="flex flex-col items-center gap-1 text-xs font-semibold text-gray-700">Cart</button>
     <a href="#lookbook" class="flex flex-col items-center gap-1 text-xs font-semibold text-gray-700">Lookbook</a>
   </mobile-docker>
 
@@ -221,98 +225,7 @@ h1, h2, h3, h4 {
 }
 
 export function generateStoreAppJs(): string {
-  return `// Invariant 1: Programmatic Scroll Hijacking Gated Against Touch Devices
-const isTouchDevice = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768;
-
-if (window.Lenis && !isTouchDevice) {
-  const lenis = new Lenis({
-    duration: 2.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
-  });
-  function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-  }
-  requestAnimationFrame(raf);
-  console.log("✨ SkyTheme Lenis Smooth Scroll Active (Desktop Fine-Pointer)");
-}
-
-// Invariant 2 & 3: Web Components & Accessible Drawer Confinement
-class BagDrawer extends HTMLElement {
-  connectedCallback() {
-    this.trapFocus = this.trapFocus.bind(this);
-    this.restoreFocus = this.restoreFocus.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    document.addEventListener("keydown", this.handleKeyDown);
-  }
-
-  disconnectedCallback() {
-    document.removeEventListener("keydown", this.handleKeyDown);
-  }
-
-  handleKeyDown(e) {
-    if (e.key === "Escape" && this.classList.contains("is-open")) {
-      this.close();
-    }
-  }
-
-  open() {
-    this.classList.add("is-open");
-    document.body.style.overflow = "hidden";
-    this.trapFocus();
-  }
-
-  close() {
-    this.classList.remove("is-open");
-    document.body.style.overflow = "";
-    this.restoreFocus();
-  }
-
-  trapFocus() {
-    const focusable = this.querySelectorAll("button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])");
-    if (focusable.length) (focusable[0] as HTMLElement).focus();
-  }
-
-  restoreFocus() {
-    const openBtn = document.getElementById("cartOpenBtn");
-    openBtn?.focus();
-  }
-}
-customElements.define("bag-drawer", BagDrawer);
-
-// Invariant 3: RAF Loop Lifecycle with Epsilon Threshold Cancellation
-class FloatingMotion {
-  current = 0;
-  target = 0;
-  rafId = null;
-
-  setTarget(val) {
-    this.target = val;
-    if (!this.rafId) this.tick();
-  }
-
-  tick() {
-    this.current += (this.target - this.current) * 0.08;
-    if (Math.abs(this.target - this.current) < 0.0001) {
-      cancelAnimationFrame(this.rafId);
-      this.rafId = null;
-      return;
-    }
-    this.rafId = requestAnimationFrame(() => this.tick());
-  }
-}
-
-// UI Bindings
-const cartDrawer = document.getElementById("cartDrawer");
-const cartOpenBtn = document.getElementById("cartOpenBtn");
-const cartCloseBtn = document.getElementById("cartCloseBtn");
-const cartOverlay = document.getElementById("cartOverlay");
-
-cartOpenBtn?.addEventListener("click", () => (cartDrawer as any)?.open?.() || cartDrawer?.classList.add("is-open"));
-cartCloseBtn?.addEventListener("click", () => (cartDrawer as any)?.close?.() || cartDrawer?.classList.remove("is-open"));
-cartOverlay?.addEventListener("click", () => (cartDrawer as any)?.close?.() || cartDrawer?.classList.remove("is-open"));
-`;
+  return "const coarse=matchMedia('(pointer: coarse)'),reduce=matchMedia('(prefers-reduced-motion: reduce)');\nlet lenis=null,scrollFrame=0;\nfunction initScroll(){if(!window.Lenis||coarse.matches||reduce.matches||innerWidth<768||lenis)return;\nlenis=new window.Lenis({duration:1.2,smoothWheel:true});\nconst raf=t=>{if(!lenis)return;lenis.raf(t);scrollFrame=requestAnimationFrame(raf)};scrollFrame=requestAnimationFrame(raf)}\nfunction endScroll(){lenis?.destroy();lenis=null;if(scrollFrame)cancelAnimationFrame(scrollFrame);scrollFrame=0}\ninitScroll();addEventListener('resize',()=>{if(coarse.matches||reduce.matches||innerWidth<768)endScroll();else initScroll()},{passive:true});\nclass BagDrawer extends HTMLElement {\nconnectedCallback(){this.inert=true;this.setAttribute('aria-hidden','true');this.keyHandler=this.onKeys.bind(this)}\nfocusable(){return [...this.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),[tabindex]:not([tabindex=\"-1\"])')].filter(el=>el.getClientRects().length)}\nonKeys(e){if(e.key==='Escape'){e.preventDefault();this.close();return}if(e.key!=='Tab')return;\nconst els=this.focusable();if(!els.length)return;let first=els[0],last=els[els.length-1];\nif(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}\nopen(){if(this.classList.contains('is-open'))return;this.opener=document.activeElement;this.lastOverflow=document.body.style.overflow;this.inert=false;this.classList.add('is-open');this.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';document.addEventListener('keydown',this.keyHandler);requestAnimationFrame(()=>this.focusable()[0]?.focus())}\nclose(){if(!this.classList.contains('is-open'))return;this.classList.remove('is-open');this.setAttribute('aria-hidden','true');this.inert=true;document.body.style.overflow=this.lastOverflow??'';document.removeEventListener('keydown',this.keyHandler);this.opener?.focus?.()}\ndisconnectedCallback(){document.removeEventListener('keydown',this.keyHandler);if(this.classList.contains('is-open'))document.body.style.overflow=this.lastOverflow??''}}\ncustomElements.define('bag-drawer',BagDrawer);\nclass LookbookCarousel extends HTMLElement {\nconnectedCallback(){this.cards=[...this.querySelectorAll('.lookbook-card')];this.onScroll=this.onScroll.bind(this);this.observer=new IntersectionObserver(entries=>{this.visible=entries.some(e=>e.isIntersecting);if(this.visible)this.onScroll()});this.observer.observe(this);addEventListener('scroll',this.onScroll,{passive:true});addEventListener('resize',this.onScroll,{passive:true})}\nonScroll(){if(!this.visible||this.frame||reduce.matches||this.cards.length<2)return;\nthis.frame=requestAnimationFrame(()=>{this.frame=0;const r=this.getBoundingClientRect(),p=Math.max(0,Math.min(1,(innerHeight-r.top)/(innerHeight+r.height)));this.cards.forEach((card,i)=>{const rank=i-(this.cards.length-1)/2;card.style.transform='translate3d(0,'+Math.round(Math.sin(p*Math.PI)*Math.abs(rank)*18)+'px,0) rotate('+(rank*(1-p)*2).toFixed(2)+'deg)'})})}\ndisconnectedCallback(){this.observer?.disconnect();removeEventListener('scroll',this.onScroll);removeEventListener('resize',this.onScroll);if(this.frame)cancelAnimationFrame(this.frame)}}\ncustomElements.define('lookbook-carousel',LookbookCarousel);\nconst drawer=document.getElementById('cartDrawer');\ndocument.getElementById('cartOpenBtn')?.addEventListener('click',()=>drawer?.open());\ndocument.getElementById('cartCloseBtn')?.addEventListener('click',()=>drawer?.close());\ndocument.getElementById('cartOverlay')?.addEventListener('click',()=>drawer?.close());\ndocument.querySelector('mobile-docker button')?.addEventListener('click',()=>drawer?.open());\nfor(const pin of document.querySelectorAll('[data-hotspot]'))pin.addEventListener('click',()=>{\ndocument.querySelectorAll('[data-hotspot]').forEach(el=>el.setAttribute('aria-pressed',String(el===pin)));\nconst status=document.getElementById('hotspotStatus');if(status)status.textContent='Selected look: '+(pin.getAttribute('data-product-id')||'item')});";
 }
 
 // Standalone CLI Execution
@@ -343,8 +256,8 @@ if (import.meta.main) {
 
   writeFileSync(join(outDir, "index.html"), generateStorefrontHtml(storeName, schemeClass));
   writeFileSync(join(outDir, "css/theme-tokens.css"), generateTokensCss());
-  writeFileSync(join(outDir, "css/theme-components.css"), "/* SkyTheme Components */");
+  writeFileSync(join(outDir, "css/theme-components.css"), `.lookbook-card { transition: transform 180ms linear; }\n[data-hotspot][aria-pressed="true"] { outline: 3px solid #111; outline-offset: 4px; }\n@media (prefers-reduced-motion: reduce) { .lookbook-card { transition: none; } }\n`);
   writeFileSync(join(outDir, "js/store-app.js"), generateStoreAppJs());
 
-  console.log(`✅ SkyTheme Storefront successfully scaffolded at ${outDir}`);
+  console.log(`Standalone HTML preview scaffolded at ${outDir}. NOT a Shopify theme or evidence of Sky parity.`);
 }
