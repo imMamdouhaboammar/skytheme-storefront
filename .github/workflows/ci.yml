@@ -23,6 +23,14 @@ jobs:
         run: |
           bun scripts/generate-storefront.ts --name "CI Brand" --out ./ci-dist
           bun scripts/validate-storefront.ts ./ci-dist/index.html
+      - name: CLI exit codes and Shopify subcommand
+        run: |
+          bun bin/cli.js shopify --out ./ci-cli-shopify
+          test -f ./ci-cli-shopify/layout/theme.liquid
+          if bun bin/cli.js generate --scheme invalid --out ./invalid-dist; then
+            echo "CLI incorrectly accepted invalid input"
+            exit 1
+          fi
       - name: Check safe installer
         run: |
           bash -n install.sh
