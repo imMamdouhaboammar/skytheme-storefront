@@ -14,13 +14,13 @@ test("cart drawer opens with dialog semantics, focus and close restoration", asy
   const open = page.locator("#cartOpenBtn");
   const drawer = page.locator("#cartDrawer");
   await open.click();
-  await expect(drawer).toHaveClass(/is-open/);
+  await expect(drawer).toHaveClass(/(?:^|\s)is-open(?:\s|$)/);
   await expect(drawer).toHaveAttribute("aria-hidden", "false");
   await expect(drawer).toHaveAttribute("aria-modal", "true");
   await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
   await expect(page.locator("#cartCloseBtn")).toBeFocused();
   await page.keyboard.press("Escape");
-  await expect(drawer).not.toHaveClass(/is-open/);
+  await expect(drawer).not.toHaveClass(/(?:^|\s)is-open(?:\s|$)/);
   await expect(open).toBeFocused();
 });
 
