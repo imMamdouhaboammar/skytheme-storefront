@@ -2,9 +2,9 @@
 /**
  * SkyTheme Storefront Universal CLI Entrypoint
  * Usage:
- *   npx skytheme-storefront generate --name "Brand" --out ./store
- *   npx skytheme-storefront validate ./store/index.html
- *   npx skytheme-storefront eval
+ *   bun bin/cli.js generate --name "Brand" --out ./store
+ *   bun bin/cli.js validate ./store/index.html
+ *   bun bin/cli.js eval
  */
 
 import { spawnSync } from "child_process";
@@ -21,15 +21,23 @@ const command = args[0] || "help";
 if (command === "generate" || command === "new" || command === "scaffold") {
   const scriptPath = join(rootDir, "scripts", "generate-storefront.ts");
   const result = spawnSync("bun", [scriptPath, ...args.slice(1)], { stdio: "inherit" });
-  process.exit(result.status ?? 0);
+  if (result.error) { console.error(result.error.message); process.exit(1); }
+  process.exit(result.status ?? 1);
+} else if (command === "shopify" || command === "generate:shopify") {
+  const scriptPath = join(rootDir, "scripts", "generate-shopify-theme.ts");
+  const result = spawnSync("bun", [scriptPath, ...args.slice(1)], { stdio: "inherit" });
+  if (result.error) { console.error(result.error.message); process.exit(1); }
+  process.exit(result.status ?? 1);
 } else if (command === "validate" || command === "check") {
   const scriptPath = join(rootDir, "scripts", "validate-storefront.ts");
   const result = spawnSync("bun", [scriptPath, ...args.slice(1)], { stdio: "inherit" });
-  process.exit(result.status ?? 0);
+  if (result.error) { console.error(result.error.message); process.exit(1); }
+  process.exit(result.status ?? 1);
 } else if (command === "eval" || command === "test" || command === "benchmark") {
   const scriptPath = join(rootDir, "scripts", "run-evals.ts");
   const result = spawnSync("bun", [scriptPath, ...args.slice(1)], { stdio: "inherit" });
-  process.exit(result.status ?? 0);
+  if (result.error) { console.error(result.error.message); process.exit(1); }
+  process.exit(result.status ?? 1);
 } else {
   console.log(`
 ✨ SkyTheme Luxury Storefront CLI v1.1.0
@@ -40,7 +48,7 @@ Commands:
                     --out <dir>      Output directory (default: ./storefront-dist)
                     --scheme <id>    Color scheme (scheme-1 to scheme-5)
 
-  validate, check   Validate any HTML file against SkyTheme design invariants
+  shopify            Generate a minimal OS2 Liquid starter (not parity certified)\n\n  validate, check   Validate any HTML file against SkyTheme design invariants
                     Usage: skytheme-storefront validate ./dist/index.html
 
   eval, benchmark   Run the behavioral evaluation benchmark suite
