@@ -1,47 +1,39 @@
 #!/usr/bin/env bash
-# Universal Multi-Agent Installer for skytheme-storefront
-set -e
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TARGET_NAME="skytheme-storefront"
-
-echo "📦 Installing ${TARGET_NAME} across AI agent harnesses..."
-
-# 1. Claude Code (~/.claude/skills)
-if [ -d "$HOME/.claude" ] || command -v claude >/dev/null 2>&1; then
-  mkdir -p "$HOME/.claude/skills"
-  rm -rf "$HOME/.claude/skills/${TARGET_NAME}"
-  cp -r "$SCRIPT_DIR" "$HOME/.claude/skills/${TARGET_NAME}"
-  echo "  ✅ Installed for Claude Code -> $HOME/.claude/skills/${TARGET_NAME}"
+set -euo pipefail
+# Run from a checkout; piping to bash loses the repository directory.
+SOURCE="$0"
+if [[ "$SOURCE" == "bash" || "$SOURCE" == "-bash" || "$SOURCE" == /dev/fd/* ]]; then
+  echo "ERROR: Clone the repository and run bash install.sh; curl | bash is unsupported." >&2
+  exit 2
 fi
-
-# 2. Antigravity / Gemini CLI (~/.gemini/config/skills)
-if [ -d "$HOME/.gemini" ]; then
-  mkdir -p "$HOME/.gemini/config/skills"
-  ln -sfn "$SCRIPT_DIR" "$HOME/.gemini/config/skills/${TARGET_NAME}"
-  echo "  ✅ Linked for Antigravity / Gemini CLI -> $HOME/.gemini/config/skills/${TARGET_NAME}"
+ROOT="$(cd "$(dirname "$SOURCE")" && pwd -P)"
+if [[ ! -f "$ROOT/SKILL.md" || ! -f "$ROOT/.skills.json" ]]; then
+  echo "ERROR: Missing SKILL.md or .skills.json in the source directory." >&2
+  exit 2
 fi
-
-# 3. Cursor (.cursor/skills in current directory or user home)
-if [ -d ".cursor" ]; then
-  mkdir -p ".cursor/skills"
-  ln -sfn "$SCRIPT_DIR" ".cursor/skills/${TARGET_NAME}"
-  echo "  ✅ Linked for Cursor -> .cursor/skills/${TARGET_NAME}"
-fi
-
-# 4. Codex / OpenCode (~/.codex/skills)
-if [ -d "$HOME/.codex" ]; then
-  mkdir -p "$HOME/.codex/skills"
-  rm -rf "$HOME/.codex/skills/${TARGET_NAME}"
-  cp -r "$SCRIPT_DIR" "$HOME/.codex/skills/${TARGET_NAME}"
-  echo "  ✅ Installed for Codex / OpenCode -> $HOME/.codex/skills/${TARGET_NAME}"
-fi
-
-# 5. Global Agent Kernel (~/.agents/skills)
-mkdir -p "$HOME/.agents/skills"
-if [ "$SCRIPT_DIR" != "$HOME/.agents/skills/${TARGET_NAME}" ]; then
-  ln -sfn "$SCRIPT_DIR" "$HOME/.agents/skills/${TARGET_NAME}"
-fi
-echo "  ✅ Linked for Universal Agent Kernel -> $HOME/.agents/skills/${TARGET_NAME}"
-
-echo "🎉 Installation complete! You can now use /skytheme-storefront across all agents."
+install_copy() {
+  local parent="$1"
+  local dest="$parent/skytheme-storefront"
+  if [[ -e "$dest" || -L "$dest" ]]; then
+    echo "SKIP existing installation: $dest (nothing deleted)"
+    return
+  fi
+  mkdir -p "$parent"
+  local staging
+  staging="$(mktemp -d "$parent/.skytheme-install.XXXXXX")"
+  if ! cp -R "$ROOT/." "$staging/"; then
+    rm -rf "$staging"
+    return 1
+  fi
+  if ! mv "$staging" "$dest"; then
+    rm -rf "$staging"
+    return 1
+  fi
+  echo "INSTALLED $dest"
+}
+if [[ -d "$HOME/.claude" ]]; then install_copy "$HOME/.claude/skills"; fi
+if [[ -d "$HOME/.codex" ]]; then install_copy "$HOME/.codex/skills"; fi
+if [[ -d "$HOME/.gemini" ]]; then install_copy "$HOME/.gemini/skills"; fi
+if [[ -d ".cursor" ]]; then install_copy "$(pwd)/.cursor/skills"; fi
+install_copy "$HOME/.agents/skills"
+echo "Done. Review SKILL.md and invoke the skill from your coding agent."
