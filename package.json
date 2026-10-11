@@ -1,7 +1,7 @@
 {
   "name": "skytheme-storefront",
   "version": "1.1.0",
-  "description": "Ultra-luxury fashion e-commerce storefront skill engineered from SkyTheme. Complete design tokens, Lenis smooth scrolling, Web Components, and all 40+ commerce features.",
+  "description": "Reference-guided storefront implementation skill and verified standalone HTML preview; Shopify Liquid starter scaffold provided separately.",
   "author": "Mamdouh Aboammar",
   "license": "MIT",
   "main": "SKILL.md",
@@ -30,9 +30,11 @@
   ],
   "scripts": {
     "eval": "bun scripts/run-evals.ts",
-    "test": "bun scripts/run-evals.ts",
+    "test": "bun scripts/run-evals.ts && playwright test",
     "generate": "bun scripts/generate-storefront.ts",
-    "validate": "bun scripts/validate-storefront.ts"
+    "validate": "bun scripts/validate-storefront.ts",
+    "test:browser": "playwright test",
+    "generate:shopify": "bun scripts/generate-shopify-theme.ts"
   },
   "keywords": [
     "agent-skill",
@@ -50,5 +52,8 @@
     "skills-sh",
     "claude-code",
     "cursor"
-  ]
+  ],
+  "devDependencies": {
+    "@playwright/test": "^1.56.0"
+  }
 }
