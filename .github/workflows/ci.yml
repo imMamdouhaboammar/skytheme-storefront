@@ -37,6 +37,10 @@ jobs:
           test -f ci-shopify/templates/index.json
           test -f ci-shopify/sections/immersive-hero.liquid
           test -f ci-shopify/config/settings_schema.json
+      - name: Install Shopify CLI
+        run: npm install -g @shopify/cli
+      - name: Shopify Theme Check (Liquid starter)
+        run: shopify theme check --path ./ci-shopify --fail-level error --no-input
       - name: Install Chromium
         run: bunx playwright install --with-deps chromium
       - name: Browser interaction tests
