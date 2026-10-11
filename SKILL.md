@@ -1,10 +1,9 @@
 ---
 name: skytheme-storefront
 description: >
-  Generate complete ultra-luxury fashion e-commerce storefronts with exact SkyTheme styling,
+  Assist with reference-grounded luxury storefront engineering,
   Lenis momentum smooth scrolling, 3D Lookbook carousel, Shop-the-Look interactive hotspots,
-  slide-out cart drawer, and 40+ conversion features across HTML/CSS/JS, Shopify Liquid,
-  or React/Next.js. Use when asked to "build a luxury fashion store", "generate SkyTheme",
+  slide-out cart drawer, and documented commerce interactions. Provides a standalone HTML preview and a separate Shopify Liquid starter, not a certified complete theme. Use when asked to "build a luxury fashion store", "generate SkyTheme",
   "recreate skytheme-demo", "add lookbook carousel with scroll pinning", "create slide-out cart
   with free shipping goal", or "build an effortless mobile fashion shopping experience".
 version: "1.1.0"
@@ -32,7 +31,7 @@ tags:
 
 # SkyTheme: Luxury Fashion E-Commerce Storefront Engine
 
-> **Haute Couture Commerce Architecture:** Engineered directly from the SkyTheme flagship production bundle.  
+ **Reference-guided architecture:** Research notes and illustrative components informed by an observed storefront. Attribution and rights must be reviewed before reuse.  
 > Delivers an ultra-luxury shopping experience combining fine editorial typography, Lenis momentum physics, tactile Web Components, accessible overlay confinement, and frictionless checkout touchpoints.
 
 $$\text{Storefront Spec} \xrightarrow{\text{SkyTheme Engine}} \begin{pmatrix} \text{Tokens \& Color Schemes (1-5)} \\ \text{Lenis Motion \& Epsilon Damping} \\ \text{Custom Web Components} \\ \text{Accessible Bag Drawer \& Hotspots} \end{pmatrix} \xrightarrow{\text{Output}} \text{Production Storefront}$$
@@ -43,12 +42,12 @@ $$\text{Storefront Spec} \xrightarrow{\text{SkyTheme Engine}} \begin{pmatrix} \t
 
 | Contract Dimension | Specification |
 |:---|:---|
-| **Primary Job** | Generate or enhance production-grade ultra-luxury fashion storefronts with verified SkyTheme design tokens, motion physics, custom elements, and 40+ commerce features. |
+| **Primary Job** | Develop independently implemented luxury storefronts using inspectable reference evidence and tests. The bundled preview is not a production Shopify theme. |
 | **Positive Triggers** | "Generate a luxury fashion storefront", "Create SkyTheme e-commerce site", "Add dual-track lookbook with 3D travel", "Build slide-out cart with free shipping bar", "Add mobile docker bottom nav". |
 | **Implicit Triggers** | "Need a high-end apparel shop with momentum scrolling and tactile pill controls", "Recreate the skytheme-demo Shopify experience". |
 | **Negative Triggers** | Backend database migrations, generic non-luxury CSS resets, unstyled CRUD tables. |
 | **Neighbor Collisions** | `minimalist-ui` (general minimalist styling without commerce engine), `landing-page-design` (single-page marketing without cart/merchandising). |
-| **Completion Criteria** | All 4 Non-Negotiable Invariants validated, responsive layouts tested across desktop and mobile, and zero unhandled RAF or focus traps. |
+| **Completion Criteria** | A real browser evaluation of interaction behavior, a valid Shopify theme check for the Liquid target, and a documented reference comparison. A passing static evaluation alone is never completion. |
 
 ---
 
@@ -115,11 +114,11 @@ All Mermaid diagrams in project documentation, READMEs, and pull requests must w
 | **Overlay Accessibility** | Low (Deterministic) | `role="dialog"`, `aria-modal="true"`, focus trap, Escape dismiss. |
 | **Custom Elements Lifecycle** | Medium (Structural) | Native Web Components extending `HTMLElement` with `connectedCallback` and `disconnectedCallback`. |
 | **Commerce Logic** | Medium (Structural) | Dynamic free shipping threshold calculation, debounced note updates, coupon calculations. |
-| **Editorial Brand Direction** | High (Creative) | Haute couture typography pairings, photography moodboards, luxury campaign storytelling copy. |
+| **Editorial Brand Direction** | None for reference-locked tasks; otherwise High | When matching a reference, do not invent design or typography decisions without evidence. Use original/licensed media. |
 
 ---
 
-## 3. All 40+ Included Features Reference Map
+## 3. Feature Reference Catalog (not all features are implemented)
 
 | Category | Features Included | Source Reference |
 | :--- | :--- | :--- |
@@ -133,7 +132,16 @@ All Mermaid diagrams in project documentation, READMEs, and pull requests must w
 
 ---
 
-## 4. Storefront Generation Workflow
+## 4. Reference and copyright policy
+
+- Treat the public Sky demo as a behavioral and visual **reference**, not a license to copy proprietary source or assets.
+- Local HTML/CSS/JavaScript captures are research material. Never redistribute or import captured proprietary code without permissions.
+- Inspect with browser tools first, then document viewport, dimensions, interactions, timing, scroll states, and evidence paths.
+- Never invent a design direction for a reference-locked implementation, and never claim pixel parity without screenshot comparisons.
+- The HTML generator is a standalone preview scaffold, not the Sky original. The Liquid generator is a basic Shopify OS2 starter with native commerce forms, not a complete theme.
+- See IMPLEMENTATION_STATUS.md and PROVENANCE.md before planning production work.
+
+## 5. Storefront Generation Workflow
 
 When generating a luxury storefront, follow this sequential execution pipeline:
 
@@ -149,7 +157,7 @@ flowchart TD
 
 ---
 
-## 5. Scaffolding & Validation Tooling
+## 6. Scaffolding & Validation Tooling
 
 ### Scaffolding a New Storefront
 ```bash
@@ -157,16 +165,25 @@ flowchart TD
 bun scripts/generate-storefront.ts --name "Maison Minimal" --out ./dist --scheme scheme-1
 ```
 
-### Validating Storefront Invariants
+### Generating a Shopify OS2 Liquid Starter
+```bash
+bun scripts/generate-shopify-theme.ts --out ./shopify-theme-dist
+# Next: Shopify CLI theme check and dev-store checkout verification
+```
+This is a minimal Shopify project scaffold, not a full feature-parity theme.
+
+### Validating Static Bundle Integrity
 ```bash
 # Run structural, accessibility, and motion checks on any HTML file:
 bun scripts/validate-storefront.ts ./dist/index.html
 ```
 
-### Running Comprehensive Evals
+### Running Deterministic Generator Evals and Real Browser Tests
 ```bash
 # Execute behavioral test bank:
 bun scripts/run-evals.ts
+bun install
+bun run test:browser
 ```
 
 ---
@@ -176,6 +193,6 @@ bun scripts/run-evals.ts
 - **Source Codebase:** `saveweb2zip-com-skytheme-demo-myshopify-com` (1.49MB production bundle)
 - **Verified Custom Elements:** `<bag-drawer>`, `<bag-lines>`, `<buy-box>`, `<buy-form>`, `<countdown-timer>`, `<floating-images>`, `<lookbook-carousel>`, `<media-gallery>`, `<mobile-docker>`, `<predictive-search>`, `<scatter-marquee>`, `<shop-the-look-banner>`, `<sticky-header>`.
 - **Verified Libraries:** Lenis 1.3.3, Motion Bundle, Swiper 11, PhotoSwipe 5.
-- **Zero Hallucination Guarantee:** Every equation, threshold, class name, and CSS property originates directly from verified code evidence in this repository.
+- **Provenance limitation:** These notes do not include an independently audited line-by-line provenance map. Verify against browser captures and inspect source rights before reuse.
 
 *Copyright (c) 2026 Mamdouh Aboammar. All rights reserved. MIT License.*
