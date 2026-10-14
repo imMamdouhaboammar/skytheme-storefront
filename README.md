@@ -4,15 +4,15 @@
 
 # 🛍️ SkyTheme Luxury Storefront Engine
 
-### Haute Couture E-Commerce Architecture & Multi-Agent Storefront Generator
-**Lenis Momentum Scrolling • Dual-Track 3D Lookbook • Accessible Bag Drawer • 40+ Merchandising Features**
+### Reference-Guided Storefront Skill, HTML Preview & Shopify OS2 Starter
+**Motion Research • Accessible Drawer • HTML Preview • Shopify Liquid Starter**
 
 [![Version](https://img.shields.io/badge/version-1.1.0-blue.svg?style=flat-square)](package.json)
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg?style=flat-square)](LICENSE)
 [![Bun](https://img.shields.io/badge/Runtime-Bun%20%3E%3D1.0-FBF0DF?style=flat-square&logo=bun&logoColor=black)](https://bun.sh)
-[![Evaluations](https://img.shields.io/badge/Evals-10%2F10%20Passed-brightgreen.svg?style=flat-square)](evals/evals.json)
+[![Evaluations](https://img.shields.io/badge/Tests-CI%20Required-orange.svg?style=flat-square)](evals/evals.json)
 [![Skills.sh](https://img.shields.io/badge/Skills.sh-Compatible-000000?style=flat-square&logo=vercel&logoColor=white)](https://skills.sh)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-Certified%20Skill-D97706?style=flat-square&logo=anthropic&logoColor=white)](https://claude.ai)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Skill%20Format-D97706?style=flat-square&logo=anthropic&logoColor=white)](https://claude.ai)
 [![Cursor](https://img.shields.io/badge/Cursor-Rules%20Ready-6366F1?style=flat-square)](https://cursor.com)
 [![Agent Kernel](https://img.shields.io/badge/Agent%20Kernel-86%20Rules%20Governed-8B5CF6?style=flat-square)](https://github.com/imMamdouhaboammar/agent-kernel)
 
@@ -33,9 +33,9 @@
 
 ## 📖 Overview
 
-**SkyTheme Storefront** is a high-presence luxury fashion e-commerce storefront engine reverse-engineered from high-end retail production code. It bridges editorial design, fluid momentum physics, and conversion optimization with zero vendor lock-in.
+**SkyTheme Storefront** is a high-presence luxury fashion e-commerce storefront engine reverse-engineered from high-end retail production code. It bridges editorial design, fluid momentum physics, and conversion optimization with a documented starting point for independent storefront implementations.
 
-Whether generating **Vanilla HTML5 / Web Components**, **Shopify Liquid Themes**, or **React / Next.js with Tailwind**, SkyTheme provides verified design tokens, physics curves, and accessible component architectures directly out of the box.
+The CLI generates a **standalone HTML demonstration** or a **minimal Shopify Online Store 2.0 Liquid starter**. The detailed reference files describe additional features but do not deploy those features automatically. React/Next.js output is not implemented. A reference comparison and storefront QA are required before claiming any parity.
 
 ---
 
@@ -80,7 +80,7 @@ flowchart TD
 
 ---
 
-## ⚡ Features Matrix (40+ Included Capabilities)
+## Reference Feature Catalog (examples and specifications, not all executable)
 
 | Domain | Feature | Description | Reference Implementation |
 | :--- | :--- | :--- | :--- |
@@ -108,21 +108,43 @@ flowchart TD
 
 ---
 
+## Important implementation limits
+
+- **HTML preview**: illustrates selected interactions; not a Shopify storefront.
+- **Shopify starter**: produces Liquid layout, JSON templates, native cart/product forms and merchant-editable sections. It does not yet reproduce Sky's full experience.
+- **Animation reference examples**: require integration and browser tests. Timings are illustrative until independently captured.
+- **Do not copy** copyrighted Sky code or media from a downloaded page merely because a local copy exists.
+- **Do not treat CI syntax checks as visual parity evidence.** See `IMPLEMENTATION_STATUS.md` and `PROVENANCE.md`.
+
 ## 🚀 Quickstart
 
-### 1. Instant Scaffolding (CLI)
+### 1. Standalone HTML Preview (CLI)
 ```bash
-# Generate a complete standalone SkyTheme storefront into ./dist:
+# Generate a standalone demonstration, not a live Shopify theme:
 bun scripts/generate-storefront.ts --name "Maison Noir" --out ./dist --scheme scheme-2
 ```
 
-### 2. Validate Storefront Invariants
+### 2. Generate a real Shopify Liquid starter
+
+```bash
+bun scripts/generate-shopify-theme.ts --out ./shopify-theme-dist
+# Follow with Shopify CLI theme check and actual store integration tests.
+```
+
+### 3. Validate static bundle integrity
 ```bash
 # Run structural, accessibility, and motion checks on any HTML file:
 bun scripts/validate-storefront.ts ./dist/index.html
 ```
 
-### 3. Run Behavioral Evals
+### 4. Run generator checks and browser E2E
+
+```bash
+bun install
+bun run test:browser
+```
+
+### 5. Run static generator checks
 ```bash
 # Run benchmark test suite:
 bun scripts/run-evals.ts
@@ -135,33 +157,32 @@ bun scripts/run-evals.ts
 SkyTheme Storefront is distributed as a universal agent skill across all major AI harnesses:
 
 ```bash
-# One-liner automated multi-agent installer:
-curl -fsSL https://raw.githubusercontent.com/imMamdouhaboammar/skytheme-storefront/main/install.sh | bash
+# Safe local install. Do not pipe the installer to bash:
+git clone https://github.com/imMamdouhaboammar/skytheme-storefront.git
+cd skytheme-storefront
+bash install.sh
 ```
 
 ### Manual Channel Integration:
 
 | AI Harness | Integration Path | Status |
 | :--- | :--- | :--- |
-| **Claude Code** | `~/.claude/skills/skytheme-storefront` | Certified |
-| **Antigravity / Gemini CLI** | `~/.gemini/config/skills/skytheme-storefront` | Certified |
-| **Cursor** | `.cursor/skills/skytheme-storefront` | Certified |
-| **Codex / OpenCode** | `~/.codex/skills/skytheme-storefront` | Certified |
-| **Agent Kernel** | `~/.agents/skills/skytheme-storefront` | Master Synced |
-| **Skills.sh (Vercel)** | `npx skills add imMamdouhaboammar/skytheme-storefront` | Registered |
+| **Claude Code** | `~/.claude/skills/skytheme-storefront` | Local installer when configured |
+| **Antigravity / Gemini CLI** | `~/.gemini/skills/skytheme-storefront` | Local installer when configured |
+| **Cursor** | `.cursor/skills/skytheme-storefront` | Local installer when configured |
+| **Codex / OpenCode** | `~/.codex/skills/skytheme-storefront` | Local installer when configured |
+| **Agent Kernel** | `~/.agents/skills/skytheme-storefront` | Local installer |
+| **Skills.sh** | `npx skills add imMamdouhaboammar/skytheme-storefront` | Supported installation pattern, verify locally |
 
 ---
 
 ## 🧪 Behavioral Evaluations & Verification
 
-SkyTheme includes a comprehensive benchmark suite evaluated via deterministic runtime execution:
+The previous 10/10 label counted unsupported assertions as passed. The revised checks cover actual generator properties, with separate Chromium interaction tests in CI. Neither suite proves Sky parity:
 
-```text
-==========================================================
-📊 EVALUATION SUMMARY: 10 Passed, 0 Failed out of 10 benchmarks
-   Evidence State: OBSERVED (Deterministic Bun Execution)
-   Integrity Gate: ALL PASS (GREEN)
-==========================================================
+```bash
+bun scripts/run-evals.ts
+bun run test:browser
 ```
 
 - **Test Bank**: [`evals/evals.json`](evals/evals.json)
@@ -173,7 +194,7 @@ SkyTheme includes a comprehensive benchmark suite evaluated via deterministic ru
 
 | Command / Flag | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `generate` | Command | — | Scaffold a complete SkyTheme luxury storefront |
+| `generate` | Command | — | Create standalone HTML preview |
 | `--name` | Option | `"AURA LUXE"` | Store brand name rendered across header and titles |
 | `--out` | Option | `"./storefront-dist"` | Destination directory for scaffolded assets |
 | `--scheme` | Option | `"scheme-1"` | Color scheme ID (`scheme-1` through `scheme-5`) |

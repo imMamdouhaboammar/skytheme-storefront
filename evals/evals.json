@@ -23,7 +23,8 @@
         "Includes slide-out <bag-drawer> with free shipping progress bar",
         "Applies pill buttons (--buttonRadius: 40px) and editorial typography hierarchy",
         "Implements sticky header with hide-on-scroll-down and reveal-on-scroll-up behavior"
-      ]
+      ],
+      "verified": false
     },
     {
       "id": "eval-02-lookbook-carousel",
@@ -35,7 +36,8 @@
         "Calculates travel progress and rank-based flex percentage (min 18%, max 33%)",
         "Applies piecewise blur and opacity stops on background cards",
         "Synchronizes right track vertical translation with scroll progress"
-      ]
+      ],
+      "verified": false
     },
     {
       "id": "eval-03-shop-the-look",
@@ -46,7 +48,8 @@
         "Defines pins with [data-hotspot='true'] and absolute coordinate percentages",
         "Clicking pin triggers slide transition on Swiper instance",
         "Swiper slide change toggles active ring state on corresponding hotspot"
-      ]
+      ],
+      "verified": false
     },
     {
       "id": "eval-04-cart-and-checkout",
@@ -60,7 +63,8 @@
         "Includes debounced input handler for <bag-note>",
         "Computes free shipping goal bar width dynamically based on cart total",
         "Dismisses cleanly on Escape key press"
-      ]
+      ],
+      "verified": false
     },
     {
       "id": "eval-05-mobile-docker",
@@ -72,7 +76,8 @@
         "Tracks scroll direction and maintains active tactile appearance",
         "Sets dynamic CSS variable --mobileDockerHeight for layout padding",
         "Includes cart badge counter with live item updates"
-      ]
+      ],
+      "verified": false
     },
     {
       "id": "eval-06-implicit-activation",
@@ -83,21 +88,24 @@
         "Activates skytheme-storefront skill autonomously",
         "Applies Bricolage Grotesque and Quicksand typography triad",
         "Selects scheme-1 (Chalk) or scheme-2 (Night Luxe) color palette"
-      ]
+      ],
+      "verified": false
     },
     {
       "id": "eval-07-close-negative",
       "type": "negative",
       "category": "routing_boundary",
       "prompt": "Write a bash script to backup my Postgres database to AWS S3.",
-      "expected_behavior": "Should NOT activate skytheme-storefront; routes to devops or database tools."
+      "expected_behavior": "Should NOT activate skytheme-storefront; routes to devops or database tools.",
+      "verified": false
     },
     {
       "id": "eval-08-collision-negative",
       "type": "negative",
       "category": "routing_boundary",
       "prompt": "Create a minimal single-page SaaS landing page for a B2B newsletter with email signup form.",
-      "expected_behavior": "Should NOT activate skytheme-storefront; routes to landing-page-design or minimalist-ui."
+      "expected_behavior": "Should NOT activate skytheme-storefront; routes to landing-page-design or minimalist-ui.",
+      "verified": false
     },
     {
       "id": "eval-09-pressure-touch-gating",
@@ -107,7 +115,8 @@
       "assertions": [
         "Refuses or gates programmatic scroll hijacking on (pointer: coarse) touch devices",
         "Cites Agent Kernel invariant: touch inertia must be handled by native browser 120Hz engine"
-      ]
+      ],
+      "verified": false
     },
     {
       "id": "eval-10-pressure-raf-epsilon",
@@ -117,7 +126,10 @@
       "assertions": [
         "Enforces epsilon cancellation threshold (|target - current| < 1e-4)",
         "Cancels requestAnimationFrame handle upon settling to prevent GPU battery drain"
-      ]
+      ],
+      "verified": false
     }
-  ]
+  ],
+  "evidence_status": "UNVERIFIED_PROMPT_SCENARIOS",
+  "warning": "This file is a scenario bank, not measured eval outcomes. The deterministic runner does not execute an AI agent. Real agent routing and UI parity remain unverified. Do not publish a 10/10 pass rate for these scenarios."
 }
