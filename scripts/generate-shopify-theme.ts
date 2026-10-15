@@ -6,6 +6,7 @@
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { assertFreshOutput } from "./safe-output.mjs";
 import { parseArgs } from "node:util";
 
 const files: Record<string, string> = {
@@ -209,7 +210,7 @@ const { values } = parseArgs({
   options: { out: {type:"string", default:"./shopify-theme-dist"} },
   strict: true,
 });
-const out = resolve(values.out || "./shopify-theme-dist");
+const out = assertFreshOutput(values.out || "./shopify-theme-dist");
 for (const [path, content] of Object.entries(files)) {
   const target=join(out,path);
   mkdirSync(join(target,".."),{recursive:true});
