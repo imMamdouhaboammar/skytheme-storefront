@@ -84,7 +84,10 @@ export function auditRun(root, manifest) {
   if (!manifest.reference?.observedAt) missing.push('Reference timestamp is missing');
   if (!manifest.implementation?.url || !manifest.implementation?.themePath || !manifest.implementation?.developmentStore) missing.push('Live Shopify implementation details are missing');
   const baseline = newManifest('https://example.com').scenarios.map(x => x.id);
-  if (!Array.isArray(manifest.scenarios) || !manifest.scenarios.length) missing.push('No scenarios');
+  if (!Array.isArray(manifest.scenarios) || !manifest.scenarios.length) {
+    missing.push('No scenarios');
+    for (const id of baseline) missing.push('required scenario missing: ' + id);
+  }
   else {
     const ids = manifest.scenarios.map(x => x?.id);
     for (const id of baseline) if (!ids.includes(id)) missing.push('required scenario missing: ' + id);
