@@ -150,7 +150,7 @@ bun scripts/validate-storefront.ts ./dist/index.html
 
 ### Running Deterministic Generator Evals and Real Browser Tests
 ```bash
-# Execute behavioral test bank:
+# Execute deterministic structural checks only:
 bun scripts/run-evals.ts
 bun install
 bun run test:browser
