@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** Explicit, opt-in WebGL inspector setup. Does not modify other MCP clients. */
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { DEFAULT_PREFIX } from './support-tools.mjs';
 
@@ -35,6 +35,7 @@ export function spectorPlan(prefix = DEFAULT_PREFIX) {
 export function spectorInstall(prefix = DEFAULT_PREFIX, executor = spawnSync) {
   const plan = spectorPlan(prefix);
   if (plan.cloned || existsSync(plan.root)) throw new Error('Spector destination exists; inspect it manually (refusing to overwrite)');
+  mkdirSync(join(resolve(prefix), 'vendors'), { recursive: true });
   const commands = plan.steps;
   for (let i = 0; i < commands.length; i++) {
     const [command, ...args] = commands[i];
