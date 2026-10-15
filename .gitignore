@@ -13,3 +13,7 @@ storefront-dist/
 *.log
 .vscode/
 .idea/
+
+# Local clean-room reference captures must not be committed
+workbench/
+.skytheme-workbench/

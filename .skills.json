@@ -1,8 +1,8 @@
 {
   "$schema": "https://schemas.agentskills.io/v1/skill.json",
   "name": "skytheme-storefront",
-  "version": "1.1.0",
-  "description": "Reference-guided luxury storefront skill with a tested HTML preview, Shopify OS2 Liquid starter and architectural reference examples; no Sky parity guarantee.",
+  "version": "1.2.0",
+  "description": "Reference-guided independent Shopify storefront skill with opt-in clean-room MCP/WebGL tools, evidence workflow and tested preview/OS2 starter; no parity guarantee.",
   "entrypoint": "SKILL.md",
   "icon": "assets/large-logo.svg",
   "references": [
@@ -13,11 +13,17 @@
     "references/product-buy-box-and-variants.md",
     "references/product-discovery-and-navigation.md",
     "references/marketing-and-conversion.md",
-    "references/full-page-templates.md"
+    "references/full-page-templates.md",
+    "references/clean-room-toolchain.md",
+    "agents/clean-room-operator.md"
   ],
   "scripts": [
     "scripts/generate-storefront.ts",
     "scripts/validate-storefront.ts",
-    "scripts/run-evals.ts"
+    "scripts/run-evals.ts",
+    "scripts/support-tools.mjs",
+    "scripts/setup-spector.mjs",
+    "scripts/clean-room.mjs",
+    "scripts/capture-motion.mjs"
   ]
 }

@@ -6,7 +6,7 @@ description: >
   slide-out cart drawer, and documented commerce interactions. Provides a standalone HTML preview and a separate Shopify Liquid starter, not a certified complete theme. Use when asked to "build a luxury fashion store", "generate SkyTheme",
   "recreate skytheme-demo", "add lookbook carousel with scroll pinning", "create slide-out cart
   with free shipping goal", or "build an effortless mobile fashion shopping experience".
-version: "1.1.0"
+version: "1.2.0"
 author: "Mamdouh Aboammar"
 license: MIT
 repository: "https://github.com/imMamdouhaboammar/skytheme-storefront"
@@ -51,72 +51,18 @@ $$\text{Storefront Spec} \xrightarrow{\text{SkyTheme Engine}} \begin{pmatrix} \t
 
 ---
 
-## 1. Architectural Constitution & Non-Negotiable Invariants
+## 1. Clean-room implementation invariants
 
-Every storefront generated or evaluated by this skill MUST strictly adhere to the four codified Agent Kernel invariants:
+1. **Reference-specific visual and motion values come only from fresh observation.** Existing formulas, CSS values, component names and runtime equations elsewhere in this repository are *legacy research*, not an approved source for a strict clean-room implementation. They are not instructions to reproduce original code.
+2. **No forced smooth scrolling on touch.** Follow pointer and motion preferences and only use Lenis when actual reference behavior and platform needs justify it.
+3. **Accessible overlays** require keyboard focus confinement, Escape dismissal, focus restoration and background scroll management, verified in real browser tests.
+4. **Animation lifecycle** must end RAF loops, listeners, GSAP/ScrollTrigger timelines and WebGL resources on unmount, especially during Shopify Theme Editor section reloads.
+5. **Motion is tested as a time-dependent behavior.** Use matched scroll states and synchronized interaction/frame captures; static screenshots alone do not prove animation fidelity.
+6. **Only original or appropriately licensed media and code** may enter the deliverable. Isolate source-sensitive observer tooling from the implementer.
 
-### 1. Touch-Momentum & Smooth Scroll Gating
-Never hijack scroll on touch devices. Gate all momentum scroll engines behind desktop fine-pointer viewports:
-```javascript
-const isTouchDevice = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
-if (!isTouchDevice) {
-  const lenis = new Lenis({
-    duration: 2.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true
-  });
-}
-```
-*Rationale: Preserves native 120Hz ProMotion/Android momentum physics and eliminates mobile battery drain.*
+## 2. Agent decisions and precedence
 
-### 2. Accessible Drawer & Modal Confinement
-All slide-out drawers (`<bag-drawer>`, `<predictive-search>`, `<quick-view-drawer>`, `<size-chart-modal>`) must declare `role="dialog"` and `aria-modal="true"`.
-```javascript
-open() {
-  this.setAttribute('open', '');
-  document.body.style.overflow = 'hidden';
-  this.trapFocus();
-}
-close() {
-  this.removeAttribute('open');
-  document.body.style.overflow = '';
-  this.restoreFocus();
-}
-```
-*Rationale: Guarantees WCAG 2.1 AA compliance, prevents background scroll bleed, and prevents keyboard focus entrapment.*
-
-### 3. RAF Loop Lifecycle & Epsilon Cancellation
-In scroll-driven Linear Interpolation (Lerp) RAF animations, always establish an epsilon threshold (`|target - current| < 1e-4`) to cancel `requestAnimationFrame` loops upon settling:
-```javascript
-function tick() {
-  current = lerp(current, target, 0.08);
-  if (Math.abs(target - current) < 0.0001) {
-    cancelAnimationFrame(rafId);
-    rafId = null;
-    return;
-  }
-  rafId = requestAnimationFrame(tick);
-}
-```
-*Rationale: Stops CPU/GPU burn at 60/120fps once cards stabilize, preventing device thermal throttling.*
-
-### 4. GitHub Markdown Mermaid Safety
-All Mermaid diagrams in project documentation, READMEs, and pull requests must wrap node labels and edge annotations in double quotes `A["Title"]` and use alphanumeric IDs `subgraph ID ["Display Title"]`.
-
----
-
-## 2. Freedom Map
-
-| Behavior | Freedom Level | Implementation Form |
-|:---|:---|:---|
-| **Design Tokens & Schemes** | Low (Deterministic) | Fixed CSS custom properties `--colorBackground`, `--buttonRadius: 40px`, `--fontSizeH1`. |
-| **Motion Physics & Easing** | Low (Deterministic) | Exponential curve `1.001 - 2^(-10t)`, Lerp factor `0.08`, epsilon `1e-4`. |
-| **Overlay Accessibility** | Low (Deterministic) | `role="dialog"`, `aria-modal="true"`, focus trap, Escape dismiss. |
-| **Custom Elements Lifecycle** | Medium (Structural) | Native Web Components extending `HTMLElement` with `connectedCallback` and `disconnectedCallback`. |
-| **Commerce Logic** | Medium (Structural) | Dynamic free shipping threshold calculation, debounced note updates, coupon calculations. |
-| **Editorial Brand Direction** | None for reference-locked tasks; otherwise High | When matching a reference, do not invent design or typography decisions without evidence. Use original/licensed media. |
-
----
+For a strict clean-room reference task, the mandatory runbook and [autonomous operator contract](agents/clean-room-operator.md) override historical examples. Source-derived materials in 'references/' are excluded from the implementer context until provenance is independently verified. Implementer freedom is limited by **measured behavior**, not by hard-coded values in this skill. The built-in preview and Shopify starter remain useful for **independent infrastructure tests**, but they do not certify reference parity.
 
 ## 3. Feature Reference Catalog (not all features are implemented)
 
@@ -131,6 +77,30 @@ All Mermaid diagrams in project documentation, READMEs, and pull requests must w
 | **Page Blueprints** | Master templates for Homepage, PDP, Collection, Lookbook, Size Guide, Cart, and Search | [`references/full-page-templates.md`](references/full-page-templates.md) |
 
 ---
+
+
+## Clean-room agentic reconstruction (required for reference parity tasks)
+
+For a request to rebuild a complex Shopify reference **end to end**, **read and follow [references/clean-room-toolchain.md](references/clean-room-toolchain.md) first**. The feature references and preview/scaffold are NOT a verified full theme. The agent must perform live browser observation, record behavioral motion specs, implement original code in OS2 Liquid, and verify paired interaction-video evidence. Never directly copy proprietary code, shaders, captured fonts, or commercial assets.
+
+Required support tools:
+- **REA** for behavioral evidence only; **Chrome DevTools MCP** for visual/layout/performance runtime measurements; **Playwright MCP + Playwright Test** for repeatable browser scenarios; **Shopify CLI + Theme Check** for development-store delivery.
+- **Spector.js MCP** is mandatory **when WebGL / Three.js is observed**. Capture GL frame/renderer information and aggregate draw statistics only. Discard original shader source, GL resource bytes and textures. Record evidence or an explicit reason why Spector is inapplicable.
+- **GSAP / ScrollTrigger / Three.js** are implementation dependencies selected by observed requirements, NOT assumed to be present in the source. For mobile/reduced motion/editor reload, enforce mount/destroy hygiene and resource disposal.
+
+Tool setup is scoped, opt-in and diagnosable; this skill never silently alters the agent's MCP config:
+~~~bash
+node scripts/support-tools.mjs doctor --json
+node scripts/support-tools.mjs plan
+node scripts/support-tools.mjs install --apply
+node scripts/setup-spector.mjs plan
+node scripts/setup-spector.mjs install --apply
+node scripts/support-tools.mjs mcp-config --spector-root "$HOME/.cache/skytheme-support-tools/vendors/Spector.js"
+node scripts/clean-room.mjs init --url https://skytheme-demo.myshopify.com/ --out ./workbench
+node scripts/capture-motion.mjs --out ./workbench --target reference --viewport desktop
+~~~
+
+**The observable behavioral specification is the handoff, not the reference's source files.** Run the full test suite, Theme Check, dev-store tests, reference/implementation motion comparison and strict 'clean-room audit'. Do not claim parity from static evals or screenshots alone. A reviewer must sign off every verified gate. Use the implementation status and provenance records before release.
 
 ## 4. Reference and copyright policy
 
@@ -188,11 +158,8 @@ bun run test:browser
 
 ---
 
-## 6. Evidence Ledger & Provenance
+## 6. Evidence and provenance
 
-- **Source Codebase:** `saveweb2zip-com-skytheme-demo-myshopify-com` (1.49MB production bundle)
-- **Verified Custom Elements:** `<bag-drawer>`, `<bag-lines>`, `<buy-box>`, `<buy-form>`, `<countdown-timer>`, `<floating-images>`, `<lookbook-carousel>`, `<media-gallery>`, `<mobile-docker>`, `<predictive-search>`, `<scatter-marquee>`, `<shop-the-look-banner>`, `<sticky-header>`.
-- **Verified Libraries:** Lenis 1.3.3, Motion Bundle, Swiper 11, PhotoSwipe 5.
-- **Provenance limitation:** These notes do not include an independently audited line-by-line provenance map. Verify against browser captures and inspect source rights before reuse.
+The reference site is observable through authorized browser interactions. This repository contains historical descriptions and examples whose provenance is not line-by-line verified for reuse. They are quarantined from strict clean-room implementation. Record freshly observed evidence, independently authored code, licensed assets, matching visual and temporal comparisons, live development Shopify tests, and reviewer approval as described in [the runbook](references/clean-room-toolchain.md).
 
-*Copyright (c) 2026 Mamdouh Aboammar. All rights reserved. MIT License.*
+*Copyright (c) 2026 Mamdouh Aboammar. MIT License applies only to material the repository is entitled to license.*

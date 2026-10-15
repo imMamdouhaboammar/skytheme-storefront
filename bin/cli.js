@@ -38,9 +38,14 @@ if (command === "generate" || command === "new" || command === "scaffold") {
   const result = spawnSync("bun", [scriptPath, ...args.slice(1)], { stdio: "inherit" });
   if (result.error) { console.error(result.error.message); process.exit(1); }
   process.exit(result.status ?? 1);
+} else if (['tools', 'spector', 'clean-room', 'capture-motion'].includes(command)) {
+  const scripts = { tools: 'support-tools.mjs', spector: 'setup-spector.mjs', 'clean-room': 'clean-room.mjs', 'capture-motion': 'capture-motion.mjs' };
+  const result = spawnSync(process.execPath, [join(rootDir, 'scripts', scripts[command]), ...args.slice(1)], { stdio: 'inherit' });
+  if (result.error) { console.error(result.error.message); process.exit(1); }
+  process.exit(result.status ?? 1);
 } else {
   console.log(`
-✨ SkyTheme Luxury Storefront CLI v1.1.0
+✨ SkyTheme Luxury Storefront CLI v1.2.0
 
 Commands:
   generate, new     Scaffold a complete SkyTheme luxury storefront
@@ -53,6 +58,11 @@ Commands:
 
   eval, benchmark   Run the behavioral evaluation benchmark suite
                     Usage: skytheme-storefront eval
+
+  tools             Read-only doctor/plan, explicit install --apply, emit MCP config
+  spector           Spector.js WebGL MCP doctor/plan/install --apply
+  clean-room        Initialize or audit evidence-ledger project
+  capture-motion    Sample scroll screenshots with Playwright and SHA-256
 
   help              Display this help menu
   `);

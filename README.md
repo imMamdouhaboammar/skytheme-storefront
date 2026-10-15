@@ -7,7 +7,7 @@
 ### Reference-Guided Storefront Skill, HTML Preview & Shopify OS2 Starter
 **Motion Research • Accessible Drawer • HTML Preview • Shopify Liquid Starter**
 
-[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg?style=flat-square)](package.json)
+[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg?style=flat-square)](package.json)
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg?style=flat-square)](LICENSE)
 [![Bun](https://img.shields.io/badge/Runtime-Bun%20%3E%3D1.0-FBF0DF?style=flat-square&logo=bun&logoColor=black)](https://bun.sh)
 [![Evaluations](https://img.shields.io/badge/Tests-CI%20Required-orange.svg?style=flat-square)](evals/evals.json)
@@ -33,11 +33,38 @@
 
 ## 📖 Overview
 
-**SkyTheme Storefront** is a high-presence luxury fashion e-commerce storefront engine reverse-engineered from high-end retail production code. It bridges editorial design, fluid momentum physics, and conversion optimization with a documented starting point for independent storefront implementations.
+**SkyTheme Storefront** is a reference-guided luxury fashion storefront skill. Historical research notes have unverified reuse provenance and must not be transferred into strict clean-room implementations; independently measured behavioral specifications govern new implementations. It bridges editorial design, fluid momentum physics, and conversion optimization with a documented starting point for independent storefront implementations.
 
 The CLI generates a **standalone HTML demonstration** or a **minimal Shopify Online Store 2.0 Liquid starter**. The detailed reference files describe additional features but do not deploy those features automatically. React/Next.js output is not implemented. A reference comparison and storefront QA are required before claiming any parity.
 
 ---
+
+
+## Clean-room, agent-driven Shopify rebuild (including WebGL)
+
+The repository now includes an opt-in **support-tooling and evidence workflow** for an AI coding agent to reconstruct observable interaction behavior without importing the reference's JS, CSS, Liquid, shaders, fonts or media. **It does not auto-generate a faithful Sky clone.** [Read the runbook](references/clean-room-toolchain.md) and [copy the agent execution contract](agents/clean-room-operator.md).
+
+**Toolchain:** REA (evidence-only), Chrome DevTools MCP, Playwright MCP / Test, Shopify CLI + Theme Check; **Spector.js MCP whenever Three.js/WebGL is observed**. Animate independent implementations with GSAP ScrollTrigger, Three.js, CSS and Shopify Liquid where justified by observed behavior. Record and compare scroll-timed video frames, 3D output and actual store commerce flows before declaring parity.
+
+~~~bash
+node scripts/support-tools.mjs doctor --json
+node scripts/support-tools.mjs plan
+node scripts/support-tools.mjs install --apply
+node scripts/setup-spector.mjs doctor
+node scripts/setup-spector.mjs plan
+node scripts/setup-spector.mjs install --apply
+node scripts/support-tools.mjs mcp-config --spector-root "$HOME/.cache/skytheme-support-tools/vendors/Spector.js"
+node scripts/clean-room.mjs init --url https://skytheme-demo.myshopify.com/ --out ./workbench
+node scripts/capture-motion.mjs --out ./workbench --target reference --viewport desktop --record-video
+node scripts/clean-room.mjs audit --out ./workbench
+node --test tests/support-tools.test.mjs tests/clean-room.test.mjs tests/capture-motion.test.mjs tests/spector.test.mjs
+~~~
+
+All installs require review and an explicit '--apply'; external npm and Spector scripts are never executed by CI. The generated MCP config is **printed**, not written into the agent's configuration. Restart the MCP host and verify live tool calls after registration. Reference captures remain local and should not be redistributed.
+
+**Suggested agent:** Claude Code with Claude Opus 5.5 for sustained design + coding sessions, or Codex with its strongest available GPT-6 reasoning model. Choose a harness with Git, shell, browser and MCP access. The model is not a replacement for the evidence and acceptance gates. For strict clean-room tasks, hand the implementer only sanitized observations, not legacy unverified code samples from this repository.
+
+**Release gate:** Shopify development-store functionality, Theme Editor lifecycle, reduced-motion/mobile behavior, visual *and temporal* capture comparisons, WebGL/Spector evidence where relevant, CI checks, rights ledger, and independent reviewer approval must all be verified. 'run.json' deliberately starts with every gate pending.
 
 ## 🛡️ Non-Negotiable Invariants
 
