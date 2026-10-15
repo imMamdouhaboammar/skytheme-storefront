@@ -41,7 +41,7 @@ const files: Record<string, string> = {
 {% schema %}
 {"name":"Header","settings":[{"type":"link_list","id":"menu","label":"Menu"}]}
 {% endschema %}`,
-  "sections/immersive-hero.liquid": String.raw`<section class="ns-hero" data-ns-motion id="shopify-section-{{ section.id }}">
+  "sections/immersive-hero.liquid": String.raw`<section class="ns-hero" data-ns-motion id="ns-hero-{{ section.id }}">
   {% if section.settings.image != blank %}
     {{ section.settings.image | image_url: width: 2400 | image_tag: class: 'ns-hero__media', loading: 'eager', sizes: '100vw', widths: '750, 1100, 1500, 2000, 2400' }}
   {% else %}
