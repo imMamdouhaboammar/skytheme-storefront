@@ -56,7 +56,8 @@ export async function runCapture(flags) {
   const delay = flags['settle-ms'] === undefined ? 450 : Number(flags['settle-ms']);
   const { chromium } = await import('@playwright/test');
   const browser = await chromium.launch({ headless: true });
-  const output = captureDirectory(root, target, viewport.id);
+  const runId = randomUUID();
+  const output = captureDirectory(root, target, viewport.id, runId);
   mkdirSync(join(root, 'evidence', target), { recursive: true });
   mkdirSync(output);
   const results = [];
@@ -93,7 +94,7 @@ export async function runCapture(flags) {
     }
   } finally { await browser.close(); }
   const report = { target, url, viewport, positions, video: videoRecord, warning: 'Sampled scroll stills/video are not frame-perfect input-replay evidence. Record controlled pointer/hover/drag and WebGL scenario evidence separately.', files: results };
-  const filename = join(root, 'reports', "capture-" + target + "-" + viewport.id + "-" + output.split("-").at(-1) + ".json");
+  const filename = join(root, 'reports', "capture-" + target + "-" + viewport.id + "-" + runId + ".json");
   mkdirSync(join(root, 'reports'), { recursive: true });
   writeFileSync(filename, JSON.stringify(report, null, 2) + '\n');
   console.log("Captured " + results.length + " frames. Report: " + filename + ". run.json gates remain PENDING.");
