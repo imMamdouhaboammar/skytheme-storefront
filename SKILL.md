@@ -6,7 +6,7 @@ description: >
   slide-out cart drawer, and documented commerce interactions. Provides a standalone HTML preview and a separate Shopify Liquid starter, not a certified complete theme. Use when asked to "build a luxury fashion store", "generate SkyTheme",
   "recreate skytheme-demo", "add lookbook carousel with scroll pinning", "create slide-out cart
   with free shipping goal", or "build an effortless mobile fashion shopping experience".
-version: "1.1.0"
+version: "1.2.0"
 author: "Mamdouh Aboammar"
 license: MIT
 repository: "https://github.com/imMamdouhaboammar/skytheme-storefront"
@@ -131,6 +131,30 @@ All Mermaid diagrams in project documentation, READMEs, and pull requests must w
 | **Page Blueprints** | Master templates for Homepage, PDP, Collection, Lookbook, Size Guide, Cart, and Search | [`references/full-page-templates.md`](references/full-page-templates.md) |
 
 ---
+
+
+## Clean-room agentic reconstruction (required for reference parity tasks)
+
+For a request to rebuild a complex Shopify reference **end to end**, **read and follow [references/clean-room-toolchain.md](references/clean-room-toolchain.md) first**. The feature references and preview/scaffold are NOT a verified full theme. The agent must perform live browser observation, record behavioral motion specs, implement original code in OS2 Liquid, and verify paired interaction-video evidence. Never directly copy proprietary code, shaders, captured fonts, or commercial assets.
+
+Required support tools:
+- **REA** for behavioral evidence only; **Chrome DevTools MCP** for visual/layout/performance runtime measurements; **Playwright MCP + Playwright Test** for repeatable browser scenarios; **Shopify CLI + Theme Check** for development-store delivery.
+- **Spector.js MCP** is mandatory **when WebGL / Three.js is observed**. Capture GL frame/renderer information and aggregate draw statistics only. Discard original shader source, GL resource bytes and textures. Record evidence or an explicit reason why Spector is inapplicable.
+- **GSAP / ScrollTrigger / Three.js** are implementation dependencies selected by observed requirements, NOT assumed to be present in the source. For mobile/reduced motion/editor reload, enforce mount/destroy hygiene and resource disposal.
+
+Tool setup is scoped, opt-in and diagnosable; this skill never silently alters the agent's MCP config:
+~~~bash
+node scripts/support-tools.mjs doctor --json
+node scripts/support-tools.mjs plan
+node scripts/support-tools.mjs install --apply
+node scripts/setup-spector.mjs plan
+node scripts/setup-spector.mjs install --apply
+node scripts/support-tools.mjs mcp-config --spector-root "$HOME/.cache/skytheme-support-tools/vendors/Spector.js"
+node scripts/clean-room.mjs init --url https://skytheme-demo.myshopify.com/ --out ./workbench
+node scripts/capture-motion.mjs --out ./workbench --target reference --viewport desktop
+~~~
+
+**The observable behavioral specification is the handoff, not the reference's source files.** Run the full test suite, Theme Check, dev-store tests, reference/implementation motion comparison and strict 'clean-room audit'. Do not claim parity from static evals or screenshots alone. A reviewer must sign off every verified gate. Use the implementation status and provenance records before release.
 
 ## 4. Reference and copyright policy
 
