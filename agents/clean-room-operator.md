@@ -30,7 +30,7 @@ Do not require frequent clarifications. If no development-store access exists, b
 1. Initialize 'node scripts/clean-room.mjs init --url REF --out ./workbench'.
 2. Build a route-and-component inventory for header, home, collection, product, predictive search, cart, drawer, overlays, responsive and accessibility states. The list is a starting checklist, not assumed feature presence.
 3. Record browser video and screenshots for trigger and state transitions: scroll scrub, sticky/pinned scenes, hover, pointer, touch, click, drag, variant changes, menu keyboard paths and reduced motion.
-4. Use 'scripts/capture-motion.mjs' for supplementary normalized scroll frames on desktop, tablet, mobile. Do not confuse scroll samples with timing evidence.
+4. Use 'scripts/capture-motion.mjs --record-video' for supplementary local scroll-session video and normalized scroll frames on desktop, tablet, mobile. Do not confuse scroll samples with timing evidence.
 5. For **every observed WebGL/Three.js scene**, use Spector's 'load_url', 'list_canvases', 'select_canvas', 'capture_frame', 'get_context_info' and 'get_webgl_state'. Summarize allowed canvas dimensions, draw-call counts, version, frame errors and visible behavior. Never call 'get_shaders', texture extraction or source-retaining actions on the reference. Shader/program resource data stay outside implementation context.
 6. Create a motion spec for each interactive feature, with trigger, states, timing measured from video, approximate keyframes, scroll progress, easing confidence, mobile/reduced motion, and references to hashed evidence. For inaccessible states write UNKNOWN, not guesses.
 
