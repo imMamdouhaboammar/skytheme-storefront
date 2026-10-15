@@ -14,7 +14,8 @@
     "references/product-discovery-and-navigation.md",
     "references/marketing-and-conversion.md",
     "references/full-page-templates.md",
-    "references/clean-room-toolchain.md"
+    "references/clean-room-toolchain.md",
+    "agents/clean-room-operator.md"
   ],
   "scripts": [
     "scripts/generate-storefront.ts",
