@@ -33,7 +33,7 @@
 
 ## 📖 Overview
 
-**SkyTheme Storefront** is a high-presence luxury fashion e-commerce storefront engine reverse-engineered from high-end retail production code. It bridges editorial design, fluid momentum physics, and conversion optimization with a documented starting point for independent storefront implementations.
+**SkyTheme Storefront** is a reference-guided luxury fashion storefront skill. Historical research notes have unverified reuse provenance and must not be transferred into strict clean-room implementations; independently measured behavioral specifications govern new implementations. It bridges editorial design, fluid momentum physics, and conversion optimization with a documented starting point for independent storefront implementations.
 
 The CLI generates a **standalone HTML demonstration** or a **minimal Shopify Online Store 2.0 Liquid starter**. The detailed reference files describe additional features but do not deploy those features automatically. React/Next.js output is not implemented. A reference comparison and storefront QA are required before claiming any parity.
 
@@ -42,7 +42,7 @@ The CLI generates a **standalone HTML demonstration** or a **minimal Shopify Onl
 
 ## Clean-room, agent-driven Shopify rebuild (including WebGL)
 
-The repository now includes an opt-in **support-tooling and evidence workflow** for an AI coding agent to reconstruct observable interaction behavior without importing the reference's JS, CSS, Liquid, shaders, fonts or media. **It does not auto-generate a faithful Sky clone.** [Read the runbook](references/clean-room-toolchain.md).
+The repository now includes an opt-in **support-tooling and evidence workflow** for an AI coding agent to reconstruct observable interaction behavior without importing the reference's JS, CSS, Liquid, shaders, fonts or media. **It does not auto-generate a faithful Sky clone.** [Read the runbook](references/clean-room-toolchain.md) and [copy the agent execution contract](agents/clean-room-operator.md).
 
 **Toolchain:** REA (evidence-only), Chrome DevTools MCP, Playwright MCP / Test, Shopify CLI + Theme Check; **Spector.js MCP whenever Three.js/WebGL is observed**. Animate independent implementations with GSAP ScrollTrigger, Three.js, CSS and Shopify Liquid where justified by observed behavior. Record and compare scroll-timed video frames, 3D output and actual store commerce flows before declaring parity.
 
@@ -62,7 +62,7 @@ node --test tests/support-tools.test.mjs tests/clean-room.test.mjs tests/capture
 
 All installs require review and an explicit '--apply'; external npm and Spector scripts are never executed by CI. The generated MCP config is **printed**, not written into the agent's configuration. Restart the MCP host and verify live tool calls after registration. Reference captures remain local and should not be redistributed.
 
-**Suggested agent:** Claude Code with Claude Opus 5.5 for sustained design + coding sessions, or Codex with its strongest available GPT-6 reasoning model. Choose a harness with Git, shell, browser and MCP access. The model is not a replacement for the evidence and acceptance gates.
+**Suggested agent:** Claude Code with Claude Opus 5.5 for sustained design + coding sessions, or Codex with its strongest available GPT-6 reasoning model. Choose a harness with Git, shell, browser and MCP access. The model is not a replacement for the evidence and acceptance gates. For strict clean-room tasks, hand the implementer only sanitized observations, not legacy unverified code samples from this repository.
 
 **Release gate:** Shopify development-store functionality, Theme Editor lifecycle, reduced-motion/mobile behavior, visual *and temporal* capture comparisons, WebGL/Spector evidence where relevant, CI checks, rights ledger, and independent reviewer approval must all be verified. 'run.json' deliberately starts with every gate pending.
 
