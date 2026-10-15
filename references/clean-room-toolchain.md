@@ -50,7 +50,7 @@ node scripts/clean-room.mjs init --url https://skytheme-demo.myshopify.com/ --ou
 # Sample frames at known normalized scroll positions, separate desktop and mobile.
 # These samples are not sufficient evidence of exact motion timing.
 node scripts/capture-motion.mjs --out ./workbench --target reference --viewport desktop \
-  --positions 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1
+  --positions 0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1 --record-video
 node scripts/capture-motion.mjs --out ./workbench --target reference --viewport mobile
 
 # After implementing and setting implementation.url to an authorized dev store in run.json:
@@ -71,7 +71,7 @@ shopify theme dev --store YOUR-DEVELOPMENT-STORE.myshopify.com --path ./shopify-
 node scripts/clean-room.mjs audit --out ./workbench
 ~~~
 
-Capture samples do not automatically mark any scenario verified. Screenshot paths, hashes and reports belong in 'workbench' (do not commit captures of third-party assets to public repo). Manually inspect/attach relevant records to run.json along with motion specs and functional E2E test IDs. Use unique, provenance-recorded implementation media. Don't copy reference bundles.
+Opt-in '--record-video' saves a local scroll-session video with SHA-256; it is not equivalent to an aligned pointer-driven GSAP/Three.js scenario replay. Capture samples do not automatically mark any scenario verified. Screenshot paths, hashes and reports belong in 'workbench' (do not commit captures of third-party assets to public repo). Manually inspect/attach relevant records to run.json along with motion specs and functional E2E test IDs. Use unique, provenance-recorded implementation media. Don't copy reference bundles.
 
 ## Agent workflow: mandatory execution order
 
