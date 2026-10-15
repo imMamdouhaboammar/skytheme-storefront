@@ -55,7 +55,7 @@ node scripts/setup-spector.mjs plan
 node scripts/setup-spector.mjs install --apply
 node scripts/support-tools.mjs mcp-config --spector-root "$HOME/.cache/skytheme-support-tools/vendors/Spector.js"
 node scripts/clean-room.mjs init --url https://skytheme-demo.myshopify.com/ --out ./workbench
-node scripts/capture-motion.mjs --out ./workbench --target reference --viewport desktop
+node scripts/capture-motion.mjs --out ./workbench --target reference --viewport desktop --record-video
 node scripts/clean-room.mjs audit --out ./workbench
 node --test tests/support-tools.test.mjs tests/clean-room.test.mjs tests/capture-motion.test.mjs tests/spector.test.mjs
 ~~~
