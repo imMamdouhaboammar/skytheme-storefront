@@ -1,6 +1,6 @@
 {
   "name": "skytheme-storefront",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Reference-guided storefront implementation skill and verified standalone HTML preview; Shopify Liquid starter scaffold provided separately.",
   "author": "Mamdouh Aboammar",
   "license": "MIT",
@@ -26,7 +26,14 @@
     "evals",
     "marketplace.json",
     ".skills.json",
-    "install.sh"
+    "install.sh",
+    "README.md",
+    "references/clean-room-toolchain.md",
+    "scripts/support-tools.mjs",
+    "scripts/clean-room.mjs",
+    "scripts/capture-motion.mjs",
+    "scripts/setup-spector.mjs",
+    "tests"
   ],
   "scripts": {
     "eval": "bun scripts/run-evals.ts",
@@ -34,7 +41,18 @@
     "generate": "bun scripts/generate-storefront.ts",
     "validate": "bun scripts/validate-storefront.ts",
     "test:browser": "playwright test",
-    "generate:shopify": "bun scripts/generate-shopify-theme.ts"
+    "generate:shopify": "bun scripts/generate-shopify-theme.ts",
+    "test:toolchain": "node --test tests/support-tools.test.mjs tests/clean-room.test.mjs tests/capture-motion.test.mjs tests/spector.test.mjs",
+    "tools:doctor": "node scripts/support-tools.mjs doctor --json",
+    "tools:plan": "node scripts/support-tools.mjs plan",
+    "tools:install": "node scripts/support-tools.mjs install",
+    "tools:mcp": "node scripts/support-tools.mjs mcp-config",
+    "spector:doctor": "node scripts/setup-spector.mjs doctor",
+    "spector:plan": "node scripts/setup-spector.mjs plan",
+    "spector:install": "node scripts/setup-spector.mjs install",
+    "clean-room:init": "node scripts/clean-room.mjs init",
+    "clean-room:audit": "node scripts/clean-room.mjs audit",
+    "motion:capture": "node scripts/capture-motion.mjs"
   },
   "keywords": [
     "agent-skill",
