@@ -11,6 +11,7 @@
 import { parseArgs } from "util";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
+import { assertFreshOutput } from "./safe-output.mjs";
 
 export function generateStorefrontHtml(storeName: string = "AURA LUXE", schemeClass: string = "scheme-1"): string {
   storeName = storeName.replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[ch] || ch));
@@ -241,7 +242,7 @@ if (import.meta.main) {
   });
 
   const storeName = values.name || "AURA LUXE";
-  const outDir = values.out || "./storefront-dist";
+  const outDir = assertFreshOutput(values.out || "./storefront-dist");
   const schemeClass = values.scheme || "scheme-1";
 
   console.log(`🚀 Generating SkyTheme Storefront for "${storeName}"...`);
