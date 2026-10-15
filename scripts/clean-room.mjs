@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /** Observation-only clean-room run manifests. No source, script, or asset harvesting. */
 import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, lstatSync, realpathSync, writeFileSync } from 'node:fs';
 import { resolve, join, relative, isAbsolute, sep } from 'node:path';
 
 export const VIEWPORTS = [
@@ -55,8 +55,11 @@ export function safeEvidence(root, record) {
   const base = resolve(root), file = resolve(base, record.path), rel = relative(base, file);
   if (!rel || rel === '..' || rel.startsWith(".." + sep) || isAbsolute(rel)) return false;
   try {
-    const fs = statSync(file);
-    if (!fs.isFile() || fs.size === 0 || fs.size > 1024 * 1024 * 1024) return false;
+    const fs = lstatSync(file);
+    if (fs.isSymbolicLink() || !fs.isFile() || fs.size === 0 || fs.size > 1024 * 1024 * 1024) return false;
+    const realRoot = realpathSync(base), realFile = realpathSync(file);
+    const inside = relative(realRoot, realFile);
+    if (!inside || inside === '..' || inside.startsWith('..' + sep) || isAbsolute(inside)) return false;
     const digest = createHash('sha256').update(readFileSync(file)).digest('hex');
     return digest === record.sha256;
   } catch { return false; }
