@@ -6,7 +6,7 @@ description: >
   slide-out cart drawer, and documented commerce interactions. Provides a standalone HTML preview and a separate Shopify Liquid starter, not a certified complete theme. Use when asked to "build a luxury fashion store", "generate SkyTheme",
   "recreate skytheme-demo", "add lookbook carousel with scroll pinning", "create slide-out cart
   with free shipping goal", or "build an effortless mobile fashion shopping experience".
-version: "1.2.0"
+version: "1.2.1"
 author: "Mamdouh Aboammar"
 license: MIT
 repository: "https://github.com/imMamdouhaboammar/skytheme-storefront"
