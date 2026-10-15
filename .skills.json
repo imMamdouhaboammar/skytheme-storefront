@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.agentskills.io/v1/skill.json",
   "name": "skytheme-storefront",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Reference-guided independent Shopify storefront skill with opt-in clean-room MCP/WebGL tools, evidence workflow and tested preview/OS2 starter; no parity guarantee.",
   "entrypoint": "SKILL.md",
   "icon": "assets/large-logo.svg",

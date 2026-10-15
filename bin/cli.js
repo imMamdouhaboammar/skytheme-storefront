@@ -45,10 +45,10 @@ if (command === "generate" || command === "new" || command === "scaffold") {
   process.exit(result.status ?? 1);
 } else {
   console.log(`
-✨ SkyTheme Luxury Storefront CLI v1.2.0
+✨ SkyTheme Luxury Storefront CLI v1.2.1
 
 Commands:
-  generate, new     Scaffold a complete SkyTheme luxury storefront
+  generate, new     Generate a standalone HTML preview (not Shopify parity)
                     --name <brand>   Brand name (default: AURA LUXE)
                     --out <dir>      Output directory (default: ./storefront-dist)
                     --scheme <id>    Color scheme (scheme-1 to scheme-5)

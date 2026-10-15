@@ -1,6 +1,6 @@
 {
   "name": "skytheme-storefront",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Reference-guided storefront implementation skill and verified standalone HTML preview; Shopify Liquid starter scaffold provided separately.",
   "author": "Mamdouh Aboammar",
   "license": "MIT",
@@ -42,7 +42,7 @@
     "validate": "bun scripts/validate-storefront.ts",
     "test:browser": "playwright test",
     "generate:shopify": "bun scripts/generate-shopify-theme.ts",
-    "test:toolchain": "node --test tests/support-tools.test.mjs tests/clean-room.test.mjs tests/capture-motion.test.mjs tests/spector.test.mjs",
+    "test:toolchain": "node --test tests/support-tools.test.mjs tests/clean-room.test.mjs tests/capture-motion.test.mjs tests/spector.test.mjs tests/audit-regressions.test.mjs tests/metadata.test.mjs",
     "tools:doctor": "node scripts/support-tools.mjs doctor --json",
     "tools:plan": "node scripts/support-tools.mjs plan",
     "tools:install": "node scripts/support-tools.mjs install",

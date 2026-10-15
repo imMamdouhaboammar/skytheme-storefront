@@ -6,6 +6,7 @@
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { assertFreshOutput } from "./safe-output.mjs";
 import { parseArgs } from "node:util";
 
 const files: Record<string, string> = {
@@ -40,7 +41,7 @@ const files: Record<string, string> = {
 {% schema %}
 {"name":"Header","settings":[{"type":"link_list","id":"menu","label":"Menu"}]}
 {% endschema %}`,
-  "sections/immersive-hero.liquid": String.raw`<section class="ns-hero" data-ns-motion id="shopify-section-{{ section.id }}">
+  "sections/immersive-hero.liquid": String.raw`<section class="ns-hero" data-ns-motion id="ns-hero-{{ section.id }}">
   {% if section.settings.image != blank %}
     {{ section.settings.image | image_url: width: 2400 | image_tag: class: 'ns-hero__media', loading: 'eager', sizes: '100vw', widths: '750, 1100, 1500, 2000, 2400' }}
   {% else %}
@@ -209,7 +210,7 @@ const { values } = parseArgs({
   options: { out: {type:"string", default:"./shopify-theme-dist"} },
   strict: true,
 });
-const out = resolve(values.out || "./shopify-theme-dist");
+const out = assertFreshOutput(values.out || "./shopify-theme-dist");
 for (const [path, content] of Object.entries(files)) {
   const target=join(out,path);
   mkdirSync(join(target,".."),{recursive:true});

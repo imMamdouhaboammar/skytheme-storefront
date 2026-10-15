@@ -7,7 +7,7 @@
 ### Reference-Guided Storefront Skill, HTML Preview & Shopify OS2 Starter
 **Motion Research • Accessible Drawer • HTML Preview • Shopify Liquid Starter**
 
-[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg?style=flat-square)](package.json)
+[![Version](https://img.shields.io/badge/version-1.2.1-blue.svg?style=flat-square)](package.json)
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg?style=flat-square)](LICENSE)
 [![Bun](https://img.shields.io/badge/Runtime-Bun%20%3E%3D1.0-FBF0DF?style=flat-square&logo=bun&logoColor=black)](https://bun.sh)
 [![Evaluations](https://img.shields.io/badge/Tests-CI%20Required-orange.svg?style=flat-square)](evals/evals.json)
@@ -57,7 +57,7 @@ node scripts/support-tools.mjs mcp-config --spector-root "$HOME/.cache/skytheme-
 node scripts/clean-room.mjs init --url https://skytheme-demo.myshopify.com/ --out ./workbench
 node scripts/capture-motion.mjs --out ./workbench --target reference --viewport desktop --record-video
 node scripts/clean-room.mjs audit --out ./workbench
-node --test tests/support-tools.test.mjs tests/clean-room.test.mjs tests/capture-motion.test.mjs tests/spector.test.mjs
+bun run test:toolchain
 ~~~
 
 All installs require review and an explicit '--apply'; external npm and Spector scripts are never executed by CI. The generated MCP config is **printed**, not written into the agent's configuration. Restart the MCP host and verify live tool calls after registration. Reference captures remain local and should not be redistributed.
@@ -68,7 +68,7 @@ All installs require review and an explicit '--apply'; external npm and Spector 
 
 ## 🛡️ Non-Negotiable Invariants
 
-All storefronts generated and evaluated by this skill strictly enforce the four codified Agent Kernel rules:
+The standalone preview implements a subset of the intended safeguards; complete Shopify/WebGL validation requires independent testing:
 
 1. **Touch-Momentum & Smooth Scroll Gating:** Programmatic scroll hijacking is strictly gated behind desktop viewports (`!window.matchMedia('(pointer: coarse)').matches && window.innerWidth >= 768`). Mobile devices retain native 120Hz ProMotion/Android momentum.
 2. **Accessible Drawer & Modal Confinement:** Every slide-out drawer (`<bag-drawer>`, `<predictive-search>`, `<quick-view-drawer>`) implements `role="dialog"`, `aria-modal="true"`, background scroll locking, Tab focus trapping, and `Escape` key dismissal.
@@ -173,7 +173,7 @@ bun run test:browser
 
 ### 5. Run static generator checks
 ```bash
-# Run benchmark test suite:
+# Run deterministic generator structural checks (not an AI benchmark):
 bun scripts/run-evals.ts
 ```
 
@@ -233,3 +233,5 @@ bun run test:browser
 ## 📄 License
 
 MIT © [Mamdouh Aboammar](https://github.com/imMamdouhaboammar).
+
+**Output safety:** Both generators refuse to overwrite a non-empty directory. Use a fresh `--out` directory for each build. Strict clean-room MCP configuration disables JavaScript evaluation, source maps and file navigation for Chrome DevTools; Spector's source/shader extraction tools are forbidden on the reference.

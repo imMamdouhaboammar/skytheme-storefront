@@ -21,10 +21,19 @@ install_copy() {
   mkdir -p "$parent"
   local staging
   staging="$(mktemp -d "$parent/.skytheme-install.XXXXXX")"
-  if ! cp -R "$ROOT/." "$staging/"; then
-    rm -rf "$staging"
-    return 1
-  fi
+  # Only ship reviewed Skill artifacts. Never include .git, local credentials,
+  # node_modules, workbench captures, or unrelated files from a checkout.
+  local item
+  local items=(SKILL.md .skills.json README.md LICENSE PROVENANCE.md IMPLEMENTATION_STATUS.md
+    package.json bin scripts references assets agents evals tests _docs marketplace.json install.sh)
+  for item in "${items[@]}"; do
+    if [[ -e "$ROOT/$item" ]]; then
+      if ! cp -R "$ROOT/$item" "$staging/$item"; then
+        rm -rf "$staging"
+        return 1
+      fi
+    fi
+  done
   if ! mv "$staging" "$dest"; then
     rm -rf "$staging"
     return 1

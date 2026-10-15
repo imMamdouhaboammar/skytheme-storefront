@@ -11,6 +11,14 @@ export const TOOL_PACKAGES = Object.freeze({
   playwright: { package: '@playwright/mcp@latest', binary: 'playwright-mcp', role: 'Controlled interactions and browser scenarios' },
   shopify: { package: '@shopify/cli@latest', binary: 'shopify', role: 'Theme Check and authenticated development-theme preview' }
 });
+export function packageName(specifier) {
+  if (specifier.startsWith('@')) {
+    const delimiter = specifier.indexOf('@', 1);
+    return delimiter < 0 ? specifier : specifier.slice(0, delimiter);
+  }
+  return specifier.split('@')[0];
+}
+
 export const DEFAULT_PREFIX = join(homedir(), '.cache', 'skytheme-support-tools');
 const ALL = Object.keys(TOOL_PACKAGES);
 
@@ -32,7 +40,7 @@ export function makeMcpConfig(prefix = DEFAULT_PREFIX, includeSpector = null) {
   for (const name of ['rea', 'chrome', 'playwright']) {
     const spec = TOOL_PACKAGES[name];
     const executable = join(resolve(prefix), 'node_modules', '.bin', spec.binary + (process.platform === 'win32' ? '.cmd' : ''));
-    const tail = name === 'rea' ? ['mcp'] : name === 'chrome' ? ['--no-usage-statistics', '--no-performance-crux'] : ['--isolated'];
+    const tail = name === 'rea' ? ['mcp'] : name === 'chrome' ? ['--no-usage-statistics', '--no-performance-crux', '--no-javascript-evaluation', '--no-source-maps', '--no-file-navigations'] : ['--isolated'];
     // Never trigger an unattended npm download while an MCP host starts.
     // Configuration may be emitted before installation but tools then fail closed.
     servers[name === 'chrome' ? 'chrome-devtools' : name] = { command: executable, args: tail };
@@ -66,7 +74,7 @@ export function status(prefix = DEFAULT_PREFIX) {
     prefix: resolve(prefix),
     tools: Object.fromEntries(ALL.map(name => {
       const spec = TOOL_PACKAGES[name];
-      const pkgPath = join(resolve(prefix), 'node_modules', ...spec.package.slice(0, spec.package.lastIndexOf('@')).split('/'), 'package.json');
+      const pkgPath = join(resolve(prefix), 'node_modules', ...packageName(spec.package).split('/'), 'package.json');
       let version = null;
       try { version = JSON.parse(readFileSync(pkgPath, 'utf8')).version; } catch { /* Not installed */ }
       return [name, { installed: Boolean(version), version, role: spec.role }];

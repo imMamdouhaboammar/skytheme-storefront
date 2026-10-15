@@ -3,6 +3,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, lstatSync, realpathSync, writeFileSync } from 'node:fs';
 import { resolve, join, relative, isAbsolute, sep } from 'node:path';
+import { isIP } from 'node:net';
 
 export const VIEWPORTS = [
   { id: 'mobile', width: 390, height: 844 },
@@ -15,9 +16,21 @@ const scenario = (id, route, trigger, viewport) => ({
   motionSpec: null, functionalTest: null
 });
 
-export function newManifest(referenceUrl) {
+/** Strict public-reference policy: no local/IP targets in a browser running with developer credentials. */
+export function publicReferenceUrl(referenceUrl) {
   const parsed = new URL(referenceUrl);
-  if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password) throw new Error('Reference must be a public http(s) URL without embedded credentials');
+  const host = parsed.hostname.replace(/^\[|\]$/g, '').toLowerCase();
+  if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password
+    || !host.includes('.') || isIP(host) !== 0
+    || host === 'localhost' || host.endsWith('.localhost') || host.endsWith('.local')
+    || host.endsWith('.internal') || host.endsWith('.test')) {
+    throw new Error('Reference must be a public domain http(s) URL without credentials or local/private hosts');
+  }
+  return parsed;
+}
+
+export function newManifest(referenceUrl) {
+  const parsed = publicReferenceUrl(referenceUrl);
   return {
     schemaVersion: 1,
     purpose: 'Independent observable-behavior reconstruction; not original source recovery',
@@ -70,10 +83,19 @@ export function auditRun(root, manifest) {
   if (manifest.schemaVersion !== 1) missing.push('Invalid run manifest schema version');
   if (!manifest.reference?.observedAt) missing.push('Reference timestamp is missing');
   if (!manifest.implementation?.url || !manifest.implementation?.themePath || !manifest.implementation?.developmentStore) missing.push('Live Shopify implementation details are missing');
-  if (!Array.isArray(manifest.scenarios) || !manifest.scenarios.length) missing.push('No scenarios');
-  else for (const item of manifest.scenarios) {
+  const baseline = newManifest('https://example.com').scenarios.map(x => x.id);
+  if (!Array.isArray(manifest.scenarios) || !manifest.scenarios.length) {
+    missing.push('No scenarios');
+    for (const id of baseline) missing.push('required scenario missing: ' + id);
+  }
+  else {
+    const ids = manifest.scenarios.map(x => x?.id);
+    for (const id of baseline) if (!ids.includes(id)) missing.push('required scenario missing: ' + id);
+    if (new Set(ids).size !== ids.length) missing.push('duplicate scenario identifier');
+    for (const item of manifest.scenarios) {
+    if (!item || typeof item !== 'object' || typeof item.id !== 'string') { missing.push('malformed scenario'); continue; }
     if (item.status === 'not-applicable') {
-      if (item.id !== 'webgl-if-present' || !item.motionSpec) missing.push(item.id + ": requires documented reason for not applicable");
+      if (item.id !== 'webgl-if-present' || !item.motionSpec || !safeEvidence(root, { path: item.motionSpec, sha256: item.motionSpecSha256 })) missing.push(item.id + ": requires hashed documented reason for not applicable");
       continue;
     }
     if (item.status !== 'verified') { missing.push(item.id + ": not verified"); continue; }
@@ -83,6 +105,7 @@ export function auditRun(root, manifest) {
     if (typeof item.motionSpec !== 'string' || !item.motionSpec.trim()) missing.push(item.id + ": missing motion specification path");
     else if (!safeEvidence(root, { path: item.motionSpec, sha256: item.motionSpecSha256 })) missing.push(item.id + ": invalid motion spec digest");
     if (typeof item.functionalTest !== 'string' || !item.functionalTest.trim()) missing.push(item.id + ": missing functional test identifier");
+    }
   }
   const required = Object.keys(newManifest('https://example.com').gates);
   for (const name of required) {
