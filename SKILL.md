@@ -163,3 +163,5 @@ bun run test:browser
 The reference site is observable through authorized browser interactions. This repository contains historical descriptions and examples whose provenance is not line-by-line verified for reuse. They are quarantined from strict clean-room implementation. Record freshly observed evidence, independently authored code, licensed assets, matching visual and temporal comparisons, live development Shopify tests, and reviewer approval as described in [the runbook](references/clean-room-toolchain.md).
 
 *Copyright (c) 2026 Mamdouh Aboammar. MIT License applies only to material the repository is entitled to license.*
+
+Output directories must be new or empty: neither generator overwrites existing files without intervention. If an output already exists, choose a different `--out` directory.
