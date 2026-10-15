@@ -17,6 +17,10 @@ This repository contains an agent skill, architectural examples, a standalone HT
 | Pixel parity | Never verified | Never verified | Requires paired browser captures |
 | Animated sections in references | Documentation and examples | Not integrated | Requires per-section work |
 
+## Agentic clean-room support layer (not automatic parity)
+
+The new tools bootstrap, Spector.js setup, per-project evidence ledger, sampled scroll screenshots and release audit are helper scripts for a human-authorized coding agent. They do **not** implement the missing Shopify sections or verify the reference by themselves. Spector must be run and its usable output recorded for observed WebGL, and actual interactions need independent motion-video evidence. See [runbook](references/clean-room-toolchain.md).
+
 ## Test layers
 
 - `bun scripts/run-evals.ts`: deterministic **syntax and structural** checks only.
