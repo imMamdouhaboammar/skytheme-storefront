@@ -7,7 +7,7 @@
 ### Reference-Guided Storefront Skill, HTML Preview & Shopify OS2 Starter
 **Motion Research • Accessible Drawer • HTML Preview • Shopify Liquid Starter**
 
-[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg?style=flat-square)](package.json)
+[![Version](https://img.shields.io/badge/version-1.2.1-blue.svg?style=flat-square)](package.json)
 [![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg?style=flat-square)](LICENSE)
 [![Bun](https://img.shields.io/badge/Runtime-Bun%20%3E%3D1.0-FBF0DF?style=flat-square&logo=bun&logoColor=black)](https://bun.sh)
 [![Evaluations](https://img.shields.io/badge/Tests-CI%20Required-orange.svg?style=flat-square)](evals/evals.json)
