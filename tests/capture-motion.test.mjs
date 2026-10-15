@@ -14,6 +14,10 @@ test('positions are increasing normalized fractions', () => {
   assert.throws(() => parsePositions('0.5,0.4'), /strictly/);
   assert.throws(() => parsePositions('0,1.1'), /strictly/);
 });
+test('video recording is explicit rather than default', () => {
+  assert.equal(parseFlags(['--out','./workbench'])['record-video'], undefined);
+  assert.equal(parseFlags(['--out','./workbench','--record-video'])['record-video'], true);
+});
 test('rejects unexpected and excessive capture args', () => {
   assert.throws(() => parseFlags(['--out','./test','--settle-ms','9000']), /settle-ms/);
   assert.throws(() => parseFlags(['--out','./test','--cookie','secret']), /Unknown/);
