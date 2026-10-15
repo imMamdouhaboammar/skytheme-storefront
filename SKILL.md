@@ -158,7 +158,7 @@ bun run test:browser
 
 ---
 
-## 6. Evidence and provenance
+## 7. Evidence and provenance
 
 The reference site is observable through authorized browser interactions. This repository contains historical descriptions and examples whose provenance is not line-by-line verified for reuse. They are quarantined from strict clean-room implementation. Record freshly observed evidence, independently authored code, licensed assets, matching visual and temporal comparisons, live development Shopify tests, and reviewer approval as described in [the runbook](references/clean-room-toolchain.md).
 
