@@ -33,9 +33,9 @@ export function makeMcpConfig(prefix = DEFAULT_PREFIX, includeSpector = null) {
     const spec = TOOL_PACKAGES[name];
     const executable = join(resolve(prefix), 'node_modules', '.bin', spec.binary + (process.platform === 'win32' ? '.cmd' : ''));
     const tail = name === 'rea' ? ['mcp'] : name === 'chrome' ? ['--no-usage-statistics', '--no-performance-crux'] : ['--isolated'];
-    servers[name === 'chrome' ? 'chrome-devtools' : name] = existsSync(executable)
-      ? { command: executable, args: tail }
-      : { command: 'npx', args: ['-y', spec.package, ...tail] };
+    // Never trigger an unattended npm download while an MCP host starts.
+    // Configuration may be emitted before installation but tools then fail closed.
+    servers[name === 'chrome' ? 'chrome-devtools' : name] = { command: executable, args: tail };
   }
   if (includeSpector) {
     const root = resolve(includeSpector);
