@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: '24'
       - name: Toolchain unit tests (no network/tool installs)
-        run: node --test tests/support-tools.test.mjs tests/clean-room.test.mjs tests/capture-motion.test.mjs tests/spector.test.mjs
+        run: node --test tests/support-tools.test.mjs tests/clean-room.test.mjs tests/capture-motion.test.mjs tests/spector.test.mjs tests/audit-regressions.test.mjs
       - name: Validate CLI toolchain routing and no-write doctor
         run: |
           bun bin/cli.js tools doctor --json
