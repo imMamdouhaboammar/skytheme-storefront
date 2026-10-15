@@ -23,6 +23,7 @@ export function parsePositions(raw = '0,0.25,0.5,0.75,1') {
 export function parseFlags(argv) {
   const flags = {};
   for (let i=0;i<argv.length;i++) {
+    if (argv[i] === '--record-video') { flags['record-video'] = true; continue; }
     if (!['--out','--url','--target','--viewport','--positions','--settle-ms'].includes(argv[i]) || !argv[i+1]) throw new Error("Unknown or incomplete flag " + argv[i]);
     flags[argv[i].slice(2)] = argv[++i];
   }
@@ -46,8 +47,9 @@ export async function runCapture(flags) {
   const output = join(root, 'evidence', target, 'scroll-' + viewport.id);
   mkdirSync(output, { recursive: true });
   const results = [];
+  let videoRecord = null;
   try {
-    const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height }, deviceScaleFactor: 1, reducedMotion: 'no-preference' });
+    const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height }, deviceScaleFactor: 1, reducedMotion: 'no-preference', ...(flags['record-video'] ? { recordVideo: { dir: output, size: { width: viewport.width, height: viewport.height } } } : {}) });
     const page = await context.newPage();
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
     if (new URL(page.url()).origin !== new URL(url).origin) throw new Error('Reference redirected across origins; refusing screenshot');
@@ -66,8 +68,13 @@ export async function runCapture(flags) {
       results.push({ path: relative(root, file), sha256: createHash('sha256').update(pixels).digest('hex'), scrollProgress: position, maxScrollY: state.maxScrollY, capturedAt: new Date().toISOString() });
     }
     await context.close();
+    if (flags['record-video'] && page.video()) {
+      const videoPath = await page.video().path();
+      const bytes = readFileSync(videoPath);
+      videoRecord = { path: relative(root, videoPath), sha256: createHash('sha256').update(bytes).digest('hex'), bytes: bytes.length };
+    }
   } finally { await browser.close(); }
-  const report = { target, url, viewport, positions, warning: 'Sampled stills only. Not a verified GSAP timeline or Three.js scene reconstruction; record interaction/video evidence separately.', files: results };
+  const report = { target, url, viewport, positions, video: videoRecord, warning: 'Sampled scroll stills/video are not frame-perfect input-replay evidence. Record controlled pointer/hover/drag and WebGL scenario evidence separately.', files: results };
   const filename = join(root, 'reports', "capture-" + target + "-" + viewport.id + "-" + Date.now() + ".json");
   mkdirSync(join(root, 'reports'), { recursive: true });
   writeFileSync(filename, JSON.stringify(report, null, 2) + '\n');
