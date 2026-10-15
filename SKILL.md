@@ -131,7 +131,7 @@ flowchart TD
 
 ### Scaffolding a New Storefront
 ```bash
-# Generate a complete standalone SkyTheme storefront into ./dist:
+# Generate HTML preview into a new empty ./dist directory:
 bun scripts/generate-storefront.ts --name "Maison Minimal" --out ./dist --scheme scheme-1
 ```
 
