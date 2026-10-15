@@ -2,8 +2,11 @@
 
 Welcome to the complete documentation for this repository. This documentation is automatically generated and maintained by Woden Docbot.
 
-![Files Documented: 0](https://img.shields.io/badge/Files_Documented-0-blue) ![Coverage: 0%](https://img.shields.io/badge/Coverage-0%-orange) ![Last Updated: 2026-10-11](https://img.shields.io/badge/Last_Updated-2026--10--11-gray)
+![Files Documented: 0](https://img.shields.io/badge/Files_Documented-0-blue) ![Coverage: 0%](https://img.shields.io/badge/Coverage-0%-orange) ![Last Updated: 2026-10-15](https://img.shields.io/badge/Last_Updated-2026--10--15-gray)
 
+## 🔗 Quick Links
+
+[📋 Dependencies](./DEPENDENCIES.md)
 
 
 ---
@@ -19,8 +22,8 @@ No documentation sections available yet.
 - **Files Documented**: 0
 - **Directories**: 0
 - **Coverage**: 0%
-- **Eligible Source Files**: 4
-- **Last Updated**: 2026-10-11
+- **Eligible Source Files**: 14
+- **Last Updated**: 2026-10-15
 
 ---
 
