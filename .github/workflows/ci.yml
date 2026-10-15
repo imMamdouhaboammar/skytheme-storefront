@@ -45,9 +45,13 @@ jobs:
       - name: Check safe installer
         run: |
           bash -n install.sh
+          echo "fixture-not-for-distribution" > .skytheme-private-ci-token
           mkdir -p "$RUNNER_TEMP/skyhome"
           HOME="$RUNNER_TEMP/skyhome" bash install.sh
           test -f "$RUNNER_TEMP/skyhome/.agents/skills/skytheme-storefront/SKILL.md"
+          test ! -e "$RUNNER_TEMP/skyhome/.agents/skills/skytheme-storefront/.git"
+          test ! -e "$RUNNER_TEMP/skyhome/.agents/skills/skytheme-storefront/.skytheme-private-ci-token"
+          rm .skytheme-private-ci-token
           HOME="$RUNNER_TEMP/skyhome" bash install.sh | grep 'SKIP existing installation'
       - name: Generate Shopify OS2 starter
         run: |
