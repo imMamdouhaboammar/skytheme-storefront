@@ -55,6 +55,8 @@ test('reference navigation forbids local targets and embedded credentials', () =
   assert.throws(() => newManifest('http://localhost:8080'),/public|private|local/i);
   const manifest=newManifest('https://skytheme-demo.myshopify.com');
   assert.throws(() => validateCaptureUrl(manifest,'reference','https://skytheme-demo.myshopify.com@127.0.0.1'),/same-origin/i);
+  manifest.reference.url='http://127.0.0.1:8080/';
+  assert.throws(() => validateCaptureUrl(manifest,'reference'),/public|private|local/i);
 });
 
 test('captures require isolated output directory per run and explicit flags', () => {
