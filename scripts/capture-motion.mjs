@@ -1,9 +1,15 @@
 #!/usr/bin/env node
 /** Observed pixel output only. No fetching/exporting JS, CSS, shaders, cookies or assets. */
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve, join, relative } from 'node:path';
 import { VIEWPORTS } from './clean-room.mjs';
+
+export function captureDirectory(root,target,viewport,runId=randomUUID()) {
+  if (!/^[a-zA-Z0-9-]{1,80}$/.test(runId)) throw new Error('Invalid capture run identifier');
+  return join(resolve(root), 'evidence', target, 'scroll-' + viewport + '-' + runId);
+}
+
 
 export function validateCaptureUrl(manifest, target, raw) {
   if (!['reference', 'implementation'].includes(target)) throw new Error('--target must be reference or implementation');
@@ -16,6 +22,7 @@ export function validateCaptureUrl(manifest, target, raw) {
   return candidate.href;
 }
 export function parsePositions(raw = '0,0.25,0.5,0.75,1') {
+  if (typeof raw !== 'string' || raw.split(',').some(part => !part.trim())) throw new Error('Positions must be strictly increasing in [0,1] (max 25)');
   const xs = raw.split(',').map(Number);
   if (!xs.length || xs.length > 25 || xs.some(x => !Number.isFinite(x) || x < 0 || x > 1) || xs.some((x, i) => i > 0 && x <= xs[i - 1])) throw new Error('Positions must be strictly increasing in [0,1] (max 25)');
   return xs;
@@ -23,9 +30,14 @@ export function parsePositions(raw = '0,0.25,0.5,0.75,1') {
 export function parseFlags(argv) {
   const flags = {};
   for (let i=0;i<argv.length;i++) {
-    if (argv[i] === '--record-video') { flags['record-video'] = true; continue; }
-    if (!['--out','--url','--target','--viewport','--positions','--settle-ms'].includes(argv[i]) || !argv[i+1]) throw new Error("Unknown or incomplete flag " + argv[i]);
-    flags[argv[i].slice(2)] = argv[++i];
+    if (argv[i] === '--record-video') {
+      if (flags['record-video']) throw new Error('duplicate --record-video');
+      flags['record-video'] = true; continue;
+    }
+    if (!['--out','--url','--target','--viewport','--positions','--settle-ms'].includes(argv[i]) || !argv[i+1] || argv[i+1].startsWith('--')) throw new Error("Unknown or incomplete flag " + argv[i]);
+    const name=argv[i].slice(2);
+    if (Object.hasOwn(flags,name)) throw new Error('duplicate --' + name);
+    flags[name] = argv[++i];
   }
   if (!flags.out) throw new Error('--out is required');
   if (flags['settle-ms'] !== undefined && (!Number.isInteger(Number(flags['settle-ms'])) || Number(flags['settle-ms']) < 0 || Number(flags['settle-ms']) > 5000)) throw new Error('--settle-ms must be 0..5000');
@@ -44,13 +56,19 @@ export async function runCapture(flags) {
   const delay = flags['settle-ms'] === undefined ? 450 : Number(flags['settle-ms']);
   const { chromium } = await import('@playwright/test');
   const browser = await chromium.launch({ headless: true });
-  const output = join(root, 'evidence', target, 'scroll-' + viewport.id);
-  mkdirSync(output, { recursive: true });
+  const output = captureDirectory(root, target, viewport.id);
+  mkdirSync(join(root, 'evidence', target), { recursive: true });
+  mkdirSync(output);
   const results = [];
   let videoRecord = null;
   try {
     const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height }, deviceScaleFactor: 1, reducedMotion: 'no-preference', ...(flags['record-video'] ? { recordVideo: { dir: output, size: { width: viewport.width, height: viewport.height } } } : {}) });
     const page = await context.newPage();
+    await page.route('**/*', route => {
+      const request=route.request();
+      if (request.isNavigationRequest() && new URL(request.url()).origin !== new URL(url).origin) return route.abort('blockedbyclient');
+      return route.continue();
+    });
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
     if (new URL(page.url()).origin !== new URL(url).origin) throw new Error('Reference redirected across origins; refusing screenshot');
     // Only scroll coordinates are evaluated. Never inspect or export application source.
@@ -75,7 +93,7 @@ export async function runCapture(flags) {
     }
   } finally { await browser.close(); }
   const report = { target, url, viewport, positions, video: videoRecord, warning: 'Sampled scroll stills/video are not frame-perfect input-replay evidence. Record controlled pointer/hover/drag and WebGL scenario evidence separately.', files: results };
-  const filename = join(root, 'reports', "capture-" + target + "-" + viewport.id + "-" + Date.now() + ".json");
+  const filename = join(root, 'reports', "capture-" + target + "-" + viewport.id + "-" + output.split("-").at(-1) + ".json");
   mkdirSync(join(root, 'reports'), { recursive: true });
   writeFileSync(filename, JSON.stringify(report, null, 2) + '\n');
   console.log("Captured " + results.length + " frames. Report: " + filename + ". run.json gates remain PENDING.");
