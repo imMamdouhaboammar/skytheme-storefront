@@ -3,7 +3,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve, join, relative } from 'node:path';
-import { VIEWPORTS } from './clean-room.mjs';
+import { VIEWPORTS, publicReferenceUrl } from './clean-room.mjs';
 
 export function captureDirectory(root,target,viewport,runId=randomUUID()) {
   if (!/^[a-zA-Z0-9-]{1,80}$/.test(runId)) throw new Error('Invalid capture run identifier');
@@ -15,6 +15,7 @@ export function validateCaptureUrl(manifest, target, raw) {
   if (!['reference', 'implementation'].includes(target)) throw new Error('--target must be reference or implementation');
   const base = target === 'reference' ? manifest.reference.url : manifest.implementation.url;
   if (!base) throw new Error("Set " + target + " URL in run.json first");
+  if (target === 'reference') publicReferenceUrl(base);
   const allowed = new URL(base), candidate = new URL(raw || base, base);
   if (!['https:', 'http:'].includes(candidate.protocol) || candidate.origin !== allowed.origin || candidate.username || candidate.password) {
     throw new Error('Capture URL must be same-origin http(s), without embedded credentials');
